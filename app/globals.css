@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #46178f;
+  --color-brand-dark: #2b0d5c;
+  --color-brand-light: #864cbf;
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  min-height: 100%;
+  background-color: #2b0d5c;
+}
+
+body {
+  background: radial-gradient(circle at 20% 0%, #5b23b0 0%, #46178f 40%, #2b0d5c 100%) fixed;
+  color: #fff;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.animate-pop { animation: pop 0.45s ease-out both; }
+
+@keyframes rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.animate-rise { animation: rise 0.8s ease-out both; }

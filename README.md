@@ -1,0 +1,47 @@
+# PBDIT Quiz
+
+A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN and invite link, then players answer timed questions and see the ranking update after each one. You can also practice solo.
+
+**Stack:** Next.js (App Router) + Tailwind, deployed on Vercel. Live games are stored in Upstash Redis.
+
+## Features
+
+- **Topic → Lesson → Difficulty → Item count** picker
+  - Network Fundamentals → Lesson 2: OSI Layers ✅
+  - Network Fundamentals → Lesson 1: Introduction to Networks — *coming soon*
+  - Programming Fundamentals, Information Management — *coming soon*
+- **Difficulties:** Easy (20s), Hard (25s), Tricky (30s), or **Full Challenge** (Easy → Hard → Tricky rounds)
+- **Item count:** 10 / 20 / 30 / 40 / All
+- **Fresh shuffle every round:** each game draws new questions from the bank, in a new order, with the choices shuffled too
+- **Kahoot-style scoring:** an instant correct answer gets full points, dropping to half at the buzzer (Easy 1000, Hard 1500, Tricky 2000 max)
+- **Live mode:** the host screen shows the PIN, invite link, player list, answer counts, answer breakdown, explanations, top 5 after each question, and a final podium
+- **Solo practice:** same timer and scoring, a review of missed questions, and personal bests saved on the device
+
+## Question bank
+
+`lib/questions/network-fundamentals/lesson-2-osi-layers.ts` has 126 questions (44 easy, 42 hard, 40 tricky). They are drafted from *PBDIT_Lesson 2_OSI-Layers* (C. T. Agos Jr.).
+
+To edit or add questions, list the **correct answer first**. Choices are shuffled at runtime. Then run:
+
+```bash
+npm run validate-bank
+```
+
+To add a new lesson, create a bank file and mark it `available` in `lib/catalog.ts`.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Without Redis env vars, live games use an in-memory store (fine for local testing in one process).
+
+## Deploy (GitHub → Vercel)
+
+1. In Vercel, choose **Add New → Project** and import this GitHub repo. The defaults work.
+2. Go to **Project → Storage → Upstash for Redis (Marketplace)**, create a free database, and connect it to the project. This sets `KV_REST_API_URL` and `KV_REST_API_TOKEN` (or `UPSTASH_REDIS_REST_URL` / `_TOKEN`).
+3. Redeploy. Every push to `main` deploys to production, and every PR gets a preview URL.
+
+> Live games **need** Redis on Vercel. Serverless instances don't share memory, so without it players may get "Game not found".
