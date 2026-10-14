@@ -7,8 +7,8 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 ## Features
 
 - **Topic → Lesson → Difficulty → Item count** picker
+  - Network Fundamentals → Lesson 1: Introduction to Networks ✅
   - Network Fundamentals → Lesson 2: OSI Layers ✅
-  - Network Fundamentals → Lesson 1: Introduction to Networks — *coming soon*
   - Programming Fundamentals, Information Management — *coming soon*
 - **Difficulties:** Easy (20s), Hard (25s), Tricky (30s), or **Full Challenge** (Easy → Hard → Tricky rounds)
 - **Item count:** 10 / 20 / 30 / 40 / All
@@ -17,9 +17,14 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 - **Live mode:** the host screen shows the PIN, invite link, player list, answer counts, answer breakdown, explanations, top 5 after each question, and a final podium
 - **Solo practice:** same timer and scoring, a review of missed questions, and personal bests saved on the device
 
-## Question bank
+## Question banks
 
-`lib/questions/network-fundamentals/lesson-2-osi-layers.ts` has 126 questions (44 easy, 42 hard, 40 tricky). They are drafted from *PBDIT_Lesson 2_OSI-Layers* (C. T. Agos Jr.).
+| Lesson | File | Questions |
+|---|---|---|
+| Network Fundamentals · Lesson 1: Introduction to Networks | `lib/questions/network-fundamentals/lesson-1-intro-to-networks.ts` | 120 (42 easy · 40 hard · 38 tricky) |
+| Network Fundamentals · Lesson 2: OSI Layers | `lib/questions/network-fundamentals/lesson-2-osi-layers.ts` | 126 (44 easy · 42 hard · 40 tricky) |
+
+Both are drafted from the PBDIT lesson PDFs by C. T. Agos Jr.
 
 To edit or add questions, list the **correct answer first**. Choices are shuffled at runtime. Then run:
 

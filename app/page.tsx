@@ -17,6 +17,7 @@ export default function Home() {
           <h1 className="text-5xl font-black tracking-tight sm:text-7xl">
             PBDIT<span className="text-yellow-300">Quiz!</span>
           </h1>
+          <p className="mt-1 text-xs font-semibold tracking-wide text-white/70 sm:text-sm">By BJ Escarilla</p>
           <p className="mt-3 text-lg text-white/80">Live, timed quizzes with rankings — built from your lessons.</p>
         </div>
 

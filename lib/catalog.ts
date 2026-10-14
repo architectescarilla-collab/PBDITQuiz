@@ -1,4 +1,5 @@
 import type { Lesson, Topic } from "./types";
+import { introToNetworksQuestions } from "./questions/network-fundamentals/lesson-1-intro-to-networks";
 import { osiLayersQuestions } from "./questions/network-fundamentals/lesson-2-osi-layers";
 
 export const TOPICS: Topic[] = [
@@ -12,7 +13,8 @@ export const TOPICS: Topic[] = [
         id: "lesson-1-intro-to-networks",
         title: "Lesson 1",
         subtitle: "Introduction to Networks",
-        status: "coming-soon",
+        status: "available",
+        questions: introToNetworksQuestions,
       },
       {
         id: "lesson-2-osi-layers",

@@ -1,36 +1,8 @@
 /**
  * Question bank — Network Fundamentals, Lesson 2: "Journey Through the Layers of the OSI"
  * Source: PBDIT_Lesson 2_OSI-Layers (Celso T. Agos Jr., PBDIT Open University).
- *
- * Authoring convention: the FIRST choice is always the correct one.
- * Choices are shuffled at runtime (unless `fixed` is set, e.g. True/False),
- * so never write choices like "All of the above" / "Both A and B".
  */
-import type { Difficulty, Question } from "../../types";
-
-type Entry = [question: string, choices: string[], explanation: string, fixed?: "fixed"];
-
-function build(difficulty: Difficulty, prefix: string, entries: Entry[]): Question[] {
-  return entries.map(([question, choices, explanation, fixed], i) => {
-    const q: Question = {
-      id: `osi-${prefix}-${String(i + 1).padStart(2, "0")}`,
-      difficulty,
-      question,
-      choices,
-      answer: 0,
-      explanation,
-    };
-    if (fixed) {
-      // True/False: keep "True" then "False" in that order; find which one is correct.
-      const correct = choices[0];
-      const ordered = ["True", "False"];
-      q.choices = ordered;
-      q.answer = ordered.indexOf(correct);
-      q.fixedOrder = true;
-    }
-    return q;
-  });
-}
+import { build, type Entry } from "../build.ts";
 
 /* ------------------------------------------------------------------ */
 /* EASY — definitions, layer names, numbers, common protocols & ports */
@@ -428,8 +400,8 @@ const tricky: Entry[] = [
     "The lesson lists gateways and some firewalls as devices involved at the Transport layer."],
 ];
 
-export const osiLayersQuestions: Question[] = [
-  ...build("easy", "e", easy),
-  ...build("hard", "h", hard),
-  ...build("tricky", "t", tricky),
+export const osiLayersQuestions = [
+  ...build("osi", "easy", easy),
+  ...build("osi", "hard", hard),
+  ...build("osi", "tricky", tricky),
 ];

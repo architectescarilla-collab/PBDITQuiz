@@ -1,7 +1,11 @@
 // Sanity checks for question banks. Run: npm run validate-bank
+import { introToNetworksQuestions } from "../lib/questions/network-fundamentals/lesson-1-intro-to-networks.ts";
 import { osiLayersQuestions } from "../lib/questions/network-fundamentals/lesson-2-osi-layers.ts";
 
-const banks = { "Network Fundamentals / Lesson 2 (OSI)": osiLayersQuestions };
+const banks = {
+  "Network Fundamentals / Lesson 1 (Intro to Networks)": introToNetworksQuestions,
+  "Network Fundamentals / Lesson 2 (OSI)": osiLayersQuestions,
+};
 let failed = false;
 
 for (const [name, bank] of Object.entries(banks)) {
