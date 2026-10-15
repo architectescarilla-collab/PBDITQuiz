@@ -41,6 +41,7 @@ export default function PracticePage() {
   const bestKey = setup ? `best:${setup.topic.id}:${setup.lesson.id}:${setup.mode}:${questions.length}` : "";
 
   const start = (s: SetupResult) => {
+    window.scrollTo({ top: 0 });
     setSetup(s);
     setQuestions(buildQuiz(s.lesson.questions ?? [], s.mode, s.count)); // fresh shuffle every round
     setIndex(0);
@@ -93,7 +94,7 @@ export default function PracticePage() {
       <Header
         right={
           phase !== "setup" && (
-            <span className="rounded-lg bg-white/15 px-3 py-1 text-sm font-bold">{score.toLocaleString()} pts</span>
+            <span className="rounded-lg bg-cream/15 px-3 py-1 text-sm font-bold">{score.toLocaleString()} pts</span>
           )
         }
       />
@@ -108,7 +109,7 @@ export default function PracticePage() {
         {phase === "countdown" && q && (
           <section className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
             {setup?.mode === "full" && (index === 0 || questions[index - 1].difficulty !== q.difficulty) && (
-              <p className="animate-pop text-2xl font-black text-yellow-300">
+              <p className="animate-pop text-2xl font-black text-accent">
                 {DIFFICULTY_INFO[q.difficulty].emoji} {DIFFICULTY_INFO[q.difficulty].label} round
               </p>
             )}
@@ -116,7 +117,7 @@ export default function PracticePage() {
               Question {index + 1} of {questions.length}
             </p>
             <h2 className="max-w-3xl text-3xl font-black">{q.question}</h2>
-            <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-white text-5xl font-black text-brand">
+            <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
               {Math.max(1, Math.ceil(msToStart / 1000))}
             </div>
           </section>
@@ -130,14 +131,14 @@ export default function PracticePage() {
               ) : (
                 <div
                   className={`animate-pop rounded-xl px-4 py-2 text-center font-black ${
-                    last?.choice === q.answer ? "bg-[#26890c]" : "bg-[#e21b3c]"
+                    last?.choice === q.answer ? "bg-good" : "bg-bad"
                   }`}
                 >
                   {last?.choice === q.answer ? `Correct! +${last.points}` : last?.choice === null ? "Time's up!" : "Incorrect"}
                 </div>
               )}
               <div className="flex-1">
-                <div className="mb-1 flex items-center gap-2 text-sm font-bold text-white/75">
+                <div className="mb-1 flex items-center gap-2 text-sm font-bold text-cream/75">
                   {index + 1} / {questions.length} <DifficultyBadge difficulty={q.difficulty} />
                 </div>
                 <h2 className="text-xl font-black sm:text-2xl">{q.question}</h2>
@@ -151,8 +152,8 @@ export default function PracticePage() {
             />
             {phase === "reveal" && (
               <>
-                <div className="rounded-xl bg-black/30 p-4">
-                  <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-yellow-300">Why?</p>
+                <div className="rounded-xl bg-umber-dark/30 p-4">
+                  <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-accent">Why?</p>
                   <p>{q.explanation}</p>
                 </div>
                 <PrimaryButton onClick={next} className="self-end">
@@ -166,9 +167,9 @@ export default function PracticePage() {
         {phase === "finished" && setup && (
           <section className="flex flex-col items-center gap-6 text-center">
             <h2 className="text-4xl font-black">Round complete!</h2>
-            <div className="rounded-2xl bg-white px-10 py-6 text-black shadow-xl">
+            <div className="rounded-2xl bg-paper px-10 py-6 text-ink shadow-xl">
               <div className="text-5xl font-black">{score.toLocaleString()}</div>
-              <div className="font-bold text-black/60">
+              <div className="font-bold text-ink/60">
                 {correctCount} / {questions.length} correct · {DIFFICULTY_INFO[setup.mode].label}
               </div>
             </div>
@@ -177,10 +178,10 @@ export default function PracticePage() {
               <h3 className="mb-2 text-center text-xl font-black">Your best on this device</h3>
               <ol className="space-y-2">
                 {best.map((b, i) => (
-                  <li key={i} className="flex items-center gap-3 rounded-lg bg-white px-4 py-2 font-bold text-black">
+                  <li key={i} className="flex items-center gap-3 rounded-lg bg-paper px-4 py-2 font-bold text-ink">
                     <span className="w-6 text-center">{i + 1}</span>
-                    <span className="flex-1 text-sm text-black/60">{b.date}</span>
-                    <span className="text-sm text-black/60">
+                    <span className="flex-1 text-sm text-ink/60">{b.date}</span>
+                    <span className="text-sm text-ink/60">
                       {b.correct}/{b.total}
                     </span>
                     <span className="w-20 text-right">{b.score.toLocaleString()}</span>
@@ -191,7 +192,7 @@ export default function PracticePage() {
 
             <div className="flex flex-wrap justify-center gap-3">
               <PrimaryButton onClick={() => start(setup)}>Play again (new shuffle)</PrimaryButton>
-              <PrimaryButton onClick={() => setPhase("setup")} className="bg-white/20">
+              <PrimaryButton onClick={() => setPhase("setup")} className="bg-cream/20">
                 Change settings
               </PrimaryButton>
             </div>
@@ -203,16 +204,16 @@ export default function PracticePage() {
                   {log
                     .filter((a) => a.choice !== a.q.answer)
                     .map((a) => (
-                      <li key={a.q.id} className="rounded-xl bg-black/30 p-4">
+                      <li key={a.q.id} className="rounded-xl bg-umber-dark/30 p-4">
                         <p className="font-bold">{a.q.question}</p>
                         <p className="mt-1 text-sm">
-                          <span className="text-red-300">
+                          <span className="text-bad-soft">
                             Your answer: {a.choice === null ? "— (no answer)" : a.q.choices[a.choice]}
                           </span>
                           <br />
-                          <span className="text-green-300">Correct: {a.q.choices[a.q.answer]}</span>
+                          <span className="text-good-soft">Correct: {a.q.choices[a.q.answer]}</span>
                         </p>
-                        <p className="mt-1 text-sm text-white/75">{a.q.explanation}</p>
+                        <p className="mt-1 text-sm text-cream/75">{a.q.explanation}</p>
                       </li>
                     ))}
                 </ul>

@@ -77,27 +77,27 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
       <Header
         right={
           <div className="flex items-center gap-3 text-sm font-bold">
-            <span className="rounded-lg bg-white/15 px-3 py-1">PIN {pin}</span>
-            <span className="rounded-lg bg-white/15 px-3 py-1">👥 {state.playerCount}</span>
+            <span className="rounded-lg bg-cream/15 px-3 py-1">PIN {pin}</span>
+            <span className="rounded-lg bg-cream/15 px-3 py-1">👥 {state.playerCount}</span>
           </div>
         }
       />
       {(error || actionError) && (
-        <p className="mx-4 mb-3 rounded-lg bg-red-600 px-4 py-2 text-center font-bold">{actionError ?? error}</p>
+        <p className="mx-4 mb-3 rounded-lg bg-bad px-4 py-2 text-center font-bold">{actionError ?? error}</p>
       )}
 
       {state.phase === "lobby" && (
         <section className="flex flex-1 flex-col items-center gap-8 px-4">
-          <div className="w-full max-w-3xl rounded-2xl bg-white p-6 text-center text-black shadow-2xl">
-            <p className="text-sm font-bold uppercase tracking-wider text-black/60">
-              Join at <span className="text-brand">{origin.replace(/^https?:\/\//, "")}</span> with Game PIN:
+          <div className="w-full max-w-3xl rounded-2xl bg-paper p-6 text-center text-ink shadow-2xl">
+            <p className="text-sm font-bold uppercase tracking-wider text-ink/60">
+              Join at <span className="text-clay">{origin.replace(/^https?:\/\//, "")}</span> with Game PIN:
             </p>
             <p className="my-2 text-6xl font-black tracking-[0.15em] sm:text-8xl">{pin}</p>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-              <code className="max-w-full truncate rounded bg-gray-100 px-3 py-2 text-sm">{joinUrl}</code>
+              <code className="max-w-full truncate rounded bg-sand/40 px-3 py-2 text-sm">{joinUrl}</code>
               <button
                 type="button"
-                className="rounded bg-brand px-3 py-2 text-sm font-bold text-white"
+                className="rounded bg-clay px-3 py-2 text-sm font-bold text-cream"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(joinUrl);
@@ -113,7 +113,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
             </div>
           </div>
           <div className="text-center">
-            <p className="text-white/80">
+            <p className="text-cream/80">
               {state.topicTitle} · {state.lessonTitle}
             </p>
             <p className="font-bold">
@@ -122,11 +122,11 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
           </div>
           <div className="flex w-full max-w-3xl flex-wrap justify-center gap-2">
             {state.leaderboard.map((p) => (
-              <span key={p.name} className="animate-pop rounded-lg bg-white/90 px-4 py-2 font-extrabold text-black">
+              <span key={p.name} className="animate-pop rounded-lg bg-paper/90 px-4 py-2 font-extrabold text-ink">
                 {p.name}
               </span>
             ))}
-            {state.playerCount === 0 && <p className="text-white/70">Waiting for players…</p>}
+            {state.playerCount === 0 && <p className="text-cream/70">Waiting for players…</p>}
           </div>
           <PrimaryButton onClick={advance} disabled={busy || state.playerCount === 0}>
             Start game
@@ -137,15 +137,15 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
       {q && state.phase === "countdown" && (
         <section className="flex flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
           {q.newRound && (
-            <p className="animate-pop text-2xl font-black text-yellow-300">
+            <p className="animate-pop text-2xl font-black text-accent">
               {DIFFICULTY_INFO[q.difficulty].emoji} {DIFFICULTY_INFO[q.difficulty].label} round
             </p>
           )}
-          <p className="text-lg font-bold text-white/80">
+          <p className="text-lg font-bold text-cream/80">
             Question {state.index + 1} of {state.total}
           </p>
           <h2 className="max-w-4xl text-3xl font-black sm:text-5xl">{q.text}</h2>
-          <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-white text-5xl font-black text-brand">
+          <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
             {Math.max(1, Math.ceil(msToStart / 1000))}
           </div>
         </section>
@@ -153,8 +153,8 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
 
       {q && (state.phase === "question" || state.phase === "reveal") && (
         <section className="flex flex-1 flex-col gap-5 px-4">
-          <div className="rounded-xl bg-white px-6 py-5 text-center text-black shadow-xl">
-            <div className="mb-2 flex items-center justify-center gap-3 text-sm font-bold text-black/60">
+          <div className="rounded-xl bg-paper px-6 py-5 text-center text-ink shadow-xl">
+            <div className="mb-2 flex items-center justify-center gap-3 text-sm font-bold text-ink/60">
               <span>
                 {state.index + 1} / {state.total}
               </span>
@@ -173,7 +173,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
             )}
             <div className="text-center">
               <div className="text-4xl font-black">{state.answeredCount}</div>
-              <div className="text-sm font-bold text-white/75">of {state.playerCount} answered</div>
+              <div className="text-sm font-bold text-cream/75">of {state.playerCount} answered</div>
             </div>
             <PrimaryButton onClick={advance} disabled={busy}>
               {state.phase === "question" ? "Skip" : isLast ? "Final results" : "Next"}
@@ -185,8 +185,8 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
           {state.phase === "reveal" && (
             <div className="grid gap-5 md:grid-cols-2">
               {q.explanation && (
-                <div className="rounded-xl bg-black/30 p-5">
-                  <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-yellow-300">Why?</p>
+                <div className="rounded-xl bg-umber-dark/30 p-5">
+                  <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-accent">Why?</p>
                   <p className="text-lg">{q.explanation}</p>
                 </div>
               )}
@@ -205,7 +205,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
           </div>
           <Link
             href="/host"
-            className="rounded-lg bg-[#333] px-6 py-3 text-lg font-extrabold text-white shadow-[0_4px_0_#000] hover:bg-black"
+            className="rounded-lg bg-umber px-6 py-3 text-lg font-extrabold text-cream shadow-[0_4px_0_var(--color-umber-dark)] hover:bg-umber-dark"
           >
             Host another game
           </Link>

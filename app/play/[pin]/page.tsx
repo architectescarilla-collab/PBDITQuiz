@@ -79,18 +79,18 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col pb-24">
       <Header
         right={
-          <span className="rounded-lg bg-white/15 px-3 py-1 text-sm font-bold">
+          <span className="rounded-lg bg-cream/15 px-3 py-1 text-sm font-bold">
             PIN {pin}
           </span>
         }
       />
-      {error && <p className="mx-4 mb-3 rounded-lg bg-red-600 px-4 py-2 text-center font-bold">{error}</p>}
+      {error && <p className="mx-4 mb-3 rounded-lg bg-bad px-4 py-2 text-center font-bold">{error}</p>}
 
       {state.phase === "lobby" && (
         <section className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
           <p className="text-3xl font-black">You&apos;re in!</p>
-          <p className="text-lg text-white/80">See your nickname on the host&apos;s screen?</p>
-          <p className="text-sm text-white/70">
+          <p className="text-lg text-cream/80">See your nickname on the host&apos;s screen?</p>
+          <p className="text-sm text-cream/70">
             {state.lessonTitle} · {state.modeLabel} · {state.total} questions
           </p>
           <p className="animate-pulse font-bold">Waiting for the host to start… ({state.playerCount} joined)</p>
@@ -100,7 +100,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
       {q && state.phase === "countdown" && (
         <section className="flex flex-1 flex-col items-center justify-center gap-5 px-4 text-center">
           {q.newRound && (
-            <p className="animate-pop text-2xl font-black text-yellow-300">
+            <p className="animate-pop text-2xl font-black text-accent">
               {DIFFICULTY_INFO[q.difficulty].emoji} {DIFFICULTY_INFO[q.difficulty].label} round
             </p>
           )}
@@ -108,7 +108,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
             Question {state.index + 1} of {state.total}
           </p>
           <p className="text-2xl font-black">Get ready!</p>
-          <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-white text-5xl font-black text-brand">
+          <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
             {Math.max(1, Math.ceil(msToStart / 1000))}
           </div>
         </section>
@@ -119,7 +119,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
           <div className="flex items-center gap-4">
             <TimerRing msLeft={msLeft} total={q.timeLimit} />
             <div className="flex-1">
-              <div className="mb-1 flex items-center gap-2 text-sm font-bold text-white/75">
+              <div className="mb-1 flex items-center gap-2 text-sm font-bold text-cream/75">
                 {state.index + 1} / {state.total} <DifficultyBadge difficulty={q.difficulty} />
               </div>
               <h2 className="text-xl font-black sm:text-2xl">{q.text}</h2>
@@ -130,8 +130,8 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
               <p className="animate-pop text-3xl font-black">{answerError ? "😬" : "Answer locked in!"}</p>
-              <p className="text-white/80">{answerError ?? "Waiting for the others…"}</p>
-              <p className="text-sm text-white/60">
+              <p className="text-cream/80">{answerError ?? "Waiting for the others…"}</p>
+              <p className="text-sm text-cream/60">
                 {state.answeredCount} of {state.playerCount} answered
               </p>
             </div>
@@ -144,7 +144,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
           {(() => {
             const r = my.result;
             const verdict = r?.correct ? "Correct!" : myChoice === null ? "Time's up!" : "Incorrect";
-            const color = r?.correct ? "bg-[#26890c]" : "bg-[#e21b3c]";
+            const color = r?.correct ? "bg-good" : "bg-bad";
             return (
               <div className={`animate-pop rounded-2xl p-6 text-center ${color}`}>
                 <p className="text-4xl font-black">{verdict}</p>
@@ -158,12 +158,12 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
           <h2 className="text-lg font-bold">{q.text}</h2>
           <ChoiceGrid choices={q.choices} answer={q.answer} picked={myChoice} distribution={q.distribution} />
           {q.explanation && (
-            <div className="rounded-xl bg-black/30 p-4">
-              <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-yellow-300">Why?</p>
+            <div className="rounded-xl bg-umber-dark/30 p-4">
+              <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-accent">Why?</p>
               <p>{q.explanation}</p>
             </div>
           )}
-          <p className="text-center text-sm text-white/70">Waiting for the host to continue…</p>
+          <p className="text-center text-sm text-cream/70">Waiting for the host to continue…</p>
         </section>
       )}
 
@@ -181,9 +181,9 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
         </section>
       )}
 
-      <footer className="fixed inset-x-0 bottom-0 flex items-center justify-between bg-white px-4 py-3 font-extrabold text-black">
+      <footer className="fixed inset-x-0 bottom-0 flex items-center justify-between bg-paper px-4 py-3 font-extrabold text-ink">
         <span className="truncate">{my.name}</span>
-        <span className="rounded bg-[#333] px-3 py-1 text-white">{(my.score ?? 0).toLocaleString()}</span>
+        <span className="rounded bg-umber px-3 py-1 text-cream">{(my.score ?? 0).toLocaleString()}</span>
       </footer>
     </main>
   );

@@ -1,21 +1,39 @@
 @import "tailwindcss";
 
+/* Muted earth-tone palette — every color in the app comes from here. */
 @theme {
-  --color-brand: #46178f;
-  --color-brand-dark: #2b0d5c;
-  --color-brand-light: #864cbf;
+  --color-umber-dark: #1f1b16; /* deepest background, shadows */
+  --color-umber: #3b3229; /* primary buttons */
+  --color-page: #2a241e; /* page background */
+  --color-paper: #f4eee2; /* light cards */
+  --color-cream: #efe6d4; /* text on dark */
+  --color-sand: #d8c8a8; /* borders on light */
+  --color-ink: #2b251f; /* text on light */
+  --color-accent: #d2a861; /* ochre highlight on dark */
+  --color-clay: #8c5a3c; /* accent on light */
+  --color-good: #5f7a4e; /* correct / know it */
+  --color-good-soft: #b5c79a;
+  --color-bad: #a4513c; /* wrong / still learning */
+  --color-bad-soft: #e2a48f;
+  --color-easy: #6b8156;
+  --color-hard: #a8743a;
+  --color-tricky: #7b5e72;
+  --color-choice-1: #a85d45; /* terracotta */
+  --color-choice-2: #4f6b78; /* slate */
+  --color-choice-3: #93702f; /* ochre */
+  --color-choice-4: #5e6b45; /* olive */
   --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
 body {
   min-height: 100%;
-  background-color: #2b0d5c;
+  background-color: var(--color-umber-dark);
 }
 
 body {
-  background: radial-gradient(circle at 20% 0%, #5b23b0 0%, #46178f 40%, #2b0d5c 100%) fixed;
-  color: #fff;
+  background: radial-gradient(circle at 20% 0%, #4a3f33 0%, var(--color-page) 45%, var(--color-umber-dark) 100%) fixed;
+  color: var(--color-cream);
 }
 
 @keyframes pop {

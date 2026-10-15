@@ -15,7 +15,7 @@ function JoinForm() {
 
   return (
     <form
-      className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 text-black shadow-2xl"
+      className="w-full max-w-sm space-y-3 rounded-2xl bg-paper p-5 text-ink shadow-2xl"
       onSubmit={async (e) => {
         e.preventDefault();
         setBusy(true);
@@ -42,7 +42,7 @@ function JoinForm() {
         aria-label="Game PIN"
         value={pin}
         onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
-        className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-center text-2xl font-black tracking-[0.3em] outline-none focus:border-brand"
+        className="w-full rounded-lg border-2 border-sand px-4 py-3 text-center text-2xl font-black tracking-[0.3em] outline-none focus:border-clay"
       />
       <input
         placeholder="Nickname"
@@ -50,9 +50,9 @@ function JoinForm() {
         maxLength={20}
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-center text-xl font-bold outline-none focus:border-brand"
+        className="w-full rounded-lg border-2 border-sand px-4 py-3 text-center text-xl font-bold outline-none focus:border-clay"
       />
-      {error && <p className="text-center text-sm font-bold text-red-600">{error}</p>}
+      {error && <p className="text-center text-sm font-bold text-bad">{error}</p>}
       <PrimaryButton type="submit" disabled={busy || pin.length !== 6 || !name.trim()} className="w-full">
         {busy ? "Joining…" : "OK, go!"}
       </PrimaryButton>

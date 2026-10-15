@@ -2,7 +2,7 @@
 
 A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN and invite link, then players answer timed questions and see the ranking update after each one. You can also practice solo.
 
-**Stack:** Next.js (App Router) + Tailwind, deployed on Vercel. Live games are stored in Upstash Redis.
+**Stack:** Next.js (App Router) + Tailwind, with a muted earth-tone palette defined once in `app/globals.css`, deployed on Vercel. Live games are stored in Upstash Redis.
 
 ## Features
 
@@ -15,6 +15,7 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 - **Fresh shuffle every round:** each game draws new questions from the bank, in a new order, with the choices shuffled too
 - **Kahoot-style scoring:** an instant correct answer gets full points, dropping to half at the buzzer (Easy 1000, Hard 1500, Tricky 2000 max)
 - **Live mode:** the host screen shows the PIN, invite link, player list, answer counts, answer breakdown, explanations, top 5 after each question, and a final podium
+- **Flashcards (Quizlet-style):** switch between *Quiz game* and *Flashcards* on the home page. Flip cards (question → answer + explanation), sort them into *Know it* / *Still learning*, re-study only the ones you're still learning, shuffle, show or hide the choices, put the answer first, use keyboard shortcuts (Space / ← / →), and see the full card list. Known cards are remembered on the device.
 - **Solo practice:** same timer and scoring, a review of missed questions, and personal bests saved on the device
 
 ## Question banks

@@ -16,7 +16,7 @@ export default function HostSetupPage() {
       <Header />
       <div className="px-4 sm:px-6">
         <h1 className="mb-6 text-3xl font-black">Host a live game</h1>
-        {error && <p className="mb-4 rounded-lg bg-red-600 px-4 py-3 font-bold">{error}</p>}
+        {error && <p className="mb-4 rounded-lg bg-bad px-4 py-3 font-bold">{error}</p>}
         <QuizSetup
           submitLabel="Create game"
           busy={busy}

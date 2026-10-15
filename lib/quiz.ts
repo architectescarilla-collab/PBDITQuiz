@@ -88,8 +88,8 @@ export function scoreAnswer(difficulty: Difficulty, correct: boolean, elapsedMs:
 }
 
 export const CHOICE_STYLES = [
-  { bg: "bg-[#e21b3c]", shape: "triangle", name: "Red" },
-  { bg: "bg-[#1368ce]", shape: "diamond", name: "Blue" },
-  { bg: "bg-[#d89e00]", shape: "circle", name: "Yellow" },
-  { bg: "bg-[#26890c]", shape: "square", name: "Green" },
+  { bg: "bg-choice-1", shape: "triangle", name: "Terracotta" },
+  { bg: "bg-choice-2", shape: "diamond", name: "Slate" },
+  { bg: "bg-choice-3", shape: "circle", name: "Ochre" },
+  { bg: "bg-choice-4", shape: "square", name: "Olive" },
 ] as const;

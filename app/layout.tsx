@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Live, timed quizzes for PBDIT lessons — host a game, invite classmates, climb the ranking.",
 };
 
-export const viewport: Viewport = { themeColor: "#46178f", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#2a241e", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
