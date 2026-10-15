@@ -9,7 +9,9 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 - **Topic → Lesson → Difficulty → Item count** picker
   - Network Fundamentals → Lesson 1: Introduction to Networks ✅
   - Network Fundamentals → Lesson 2: OSI Layers ✅
-  - Programming Fundamentals, Information Management — *coming soon*
+  - Programming Fundamentals → Lessons 1–2: Introduction to Python ✅
+  - Programming Fundamentals → Lessons 2b–3b: Loops, Lists & Tuples, Sets & Dictionaries ✅
+  - Information Management — *coming soon*
 - **Difficulties:** Easy (20s), Hard (25s), Tricky (30s), or **Full Challenge** (Easy → Hard → Tricky rounds)
 - **Item count:** 10 / 20 / 30 / 40 / All
 - **Fresh shuffle every round:** each game draws new questions from the bank, in a new order, with the choices shuffled too
@@ -24,8 +26,12 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 |---|---|---|
 | Network Fundamentals · Lesson 1: Introduction to Networks | `lib/questions/network-fundamentals/lesson-1-intro-to-networks.ts` | 120 (42 easy · 40 hard · 38 tricky) |
 | Network Fundamentals · Lesson 2: OSI Layers | `lib/questions/network-fundamentals/lesson-2-osi-layers.ts` | 126 (44 easy · 42 hard · 40 tricky) |
+| Programming Fundamentals · Lessons 1–2: Introduction to Python | `lib/questions/programming-fundamentals/lesson-1-2-intro-to-python.ts` | 106 (40 easy · 34 hard · 32 tricky) |
+| Programming Fundamentals · Lessons 2b–3b: Loops, Lists & Tuples, Sets & Dictionaries | `lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts` | 123 (40 easy · 40 hard · 43 tricky) |
 
-Both are drafted from the PBDIT lesson PDFs by C. T. Agos Jr.
+The Network Fundamentals banks are drafted from the PBDIT 503 lesson PDFs (C. T. Agos Jr.). The Programming Fundamentals banks are drafted from the PBDIT 501 lessons (PUP Open University System).
+
+Code questions use `code("prompt", \`snippet\`)` and backticks for code-like choices. Every "What is the output?" answer was checked by running the snippet in Python 3.
 
 To edit or add questions, list the **correct answer first**. Choices are shuffled at runtime. Then run:
 

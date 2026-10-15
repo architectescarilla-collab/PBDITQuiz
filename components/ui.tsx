@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { RichText } from "@/components/RichText";
 import { useEffect, useState } from "react";
 import { CHOICE_STYLES, DIFFICULTY_INFO } from "@/lib/quiz";
 import type { Difficulty } from "@/lib/types";
@@ -78,7 +79,7 @@ export function ChoiceGrid({
             }`}
           >
             <Shape kind={style.shape} className={large ? "h-9 w-9 shrink-0" : "h-7 w-7 shrink-0"} />
-            <span className="flex-1 py-3">{text}</span>
+            <RichText text={text} className="flex-1 py-3" />
             {revealed && i === answer && <span className="text-3xl">✓</span>}
             {distribution && (
               <span

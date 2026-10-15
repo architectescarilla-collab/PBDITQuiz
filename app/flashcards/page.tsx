@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { RichText } from "@/components/RichText";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuizSetup, type SetupResult } from "@/components/QuizSetup";
 import { DifficultyBadge, Header, PrimaryButton } from "@/components/ui";
@@ -321,14 +322,14 @@ function Study({ setup }: { setup: SetupResult }) {
         <ul className="space-y-2">
           {all.map((q) => (
             <li key={q.id} className="grid gap-2 rounded-xl bg-paper p-4 text-ink sm:grid-cols-[3fr_2fr] sm:gap-6">
-              <p className="font-semibold">{q.question}</p>
+              <RichText text={q.question} className="font-semibold" />
               <p className="flex items-start gap-2 font-bold text-clay sm:border-l sm:border-sand sm:pl-6">
                 {known.has(q.id) && (
                   <span title="You know this" className="text-good">
                     ✓
                   </span>
                 )}
-                {answerText(q)}
+                <RichText text={answerText(q)} />
               </p>
             </li>
           ))}
@@ -348,7 +349,7 @@ function FaceQuestion({ q, showChoices }: { q: Question; showChoices: boolean })
         <DifficultyBadge difficulty={q.difficulty} />
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-5 py-4 text-center">
-        <p className="text-2xl font-bold leading-snug sm:text-3xl">{q.question}</p>
+        <RichText text={q.question} className="w-full text-2xl leading-snug font-bold sm:text-3xl" />
         {showChoices && (
           <ul className="flex flex-wrap justify-center gap-2">
             {choices.map((c) => (
@@ -356,7 +357,7 @@ function FaceQuestion({ q, showChoices }: { q: Question; showChoices: boolean })
                 key={c}
                 className="rounded-full border border-sand bg-sand/30 px-3 py-1 text-sm font-semibold text-ink/80"
               >
-                {c}
+                <RichText text={c} />
               </li>
             ))}
           </ul>
@@ -371,8 +372,8 @@ function FaceAnswer({ q, answer }: { q: Question; answer: string }) {
     <>
       <span className="text-xs font-extrabold uppercase tracking-wider text-ink/50">Answer</span>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 text-center">
-        <p className="text-3xl font-black text-clay sm:text-4xl">{answer}</p>
-        <p className="max-w-xl text-base text-ink/75 sm:text-lg">{q.explanation}</p>
+        <RichText text={answer} className="text-3xl font-black text-clay sm:text-4xl" />
+        <RichText text={q.explanation} className="max-w-xl text-base text-ink/75 sm:text-lg" />
       </div>
     </>
   );

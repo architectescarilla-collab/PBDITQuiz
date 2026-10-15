@@ -30,3 +30,8 @@ export function build(idPrefix: string, difficulty: Difficulty, entries: Entry[]
     return q;
   });
 }
+
+/** A question prompt followed by a code snippet, shown as a code block. */
+export function code(prompt: string, src: string): string {
+  return `${prompt}\n\`\`\`\n${src}\n\`\`\``;
+}

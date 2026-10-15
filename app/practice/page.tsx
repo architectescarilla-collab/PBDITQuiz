@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@/components/RichText";
 import { useCallback, useEffect, useState } from "react";
 import { QuizSetup, type SetupResult } from "@/components/QuizSetup";
 import { ChoiceGrid, DifficultyBadge, Header, PrimaryButton, TimerRing, useCountdown } from "@/components/ui";
@@ -116,7 +117,7 @@ export default function PracticePage() {
             <p className="text-xl font-bold">
               Question {index + 1} of {questions.length}
             </p>
-            <h2 className="max-w-3xl text-3xl font-black">{q.question}</h2>
+            <RichText text={q.question} className="max-w-3xl text-3xl font-black" />
             <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
               {Math.max(1, Math.ceil(msToStart / 1000))}
             </div>
@@ -137,11 +138,11 @@ export default function PracticePage() {
                   {last?.choice === q.answer ? `Correct! +${last.points}` : last?.choice === null ? "Time's up!" : "Incorrect"}
                 </div>
               )}
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center gap-2 text-sm font-bold text-cream/75">
                   {index + 1} / {questions.length} <DifficultyBadge difficulty={q.difficulty} />
                 </div>
-                <h2 className="text-xl font-black sm:text-2xl">{q.question}</h2>
+                <RichText text={q.question} className="text-xl font-black sm:text-2xl" />
               </div>
             </div>
             <ChoiceGrid
@@ -154,7 +155,7 @@ export default function PracticePage() {
               <>
                 <div className="rounded-xl bg-umber-dark/30 p-4">
                   <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-accent">Why?</p>
-                  <p>{q.explanation}</p>
+                  <RichText text={q.explanation} />
                 </div>
                 <PrimaryButton onClick={next} className="self-end">
                   {index + 1 >= questions.length ? "See results" : "Next"}
@@ -205,15 +206,17 @@ export default function PracticePage() {
                     .filter((a) => a.choice !== a.q.answer)
                     .map((a) => (
                       <li key={a.q.id} className="rounded-xl bg-umber-dark/30 p-4">
-                        <p className="font-bold">{a.q.question}</p>
-                        <p className="mt-1 text-sm">
-                          <span className="text-bad-soft">
-                            Your answer: {a.choice === null ? "— (no answer)" : a.q.choices[a.choice]}
-                          </span>
-                          <br />
-                          <span className="text-good-soft">Correct: {a.q.choices[a.q.answer]}</span>
-                        </p>
-                        <p className="mt-1 text-sm text-cream/75">{a.q.explanation}</p>
+                        <RichText text={a.q.question} className="font-bold" />
+                        <div className="mt-1 space-y-1 text-sm">
+                          <div className="text-bad-soft">
+                            Your answer:{" "}
+                            {a.choice === null ? "— (no answer)" : <RichText text={a.q.choices[a.choice]} className="inline" />}
+                          </div>
+                          <div className="text-good-soft">
+                            Correct: <RichText text={a.q.choices[a.q.answer]} className="inline" />
+                          </div>
+                        </div>
+                        <RichText text={a.q.explanation} className="mt-1 text-sm text-cream/75" />
                       </li>
                     ))}
                 </ul>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { RichText } from "@/components/RichText";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -144,7 +145,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
           <p className="text-lg font-bold text-cream/80">
             Question {state.index + 1} of {state.total}
           </p>
-          <h2 className="max-w-4xl text-3xl font-black sm:text-5xl">{q.text}</h2>
+          <RichText text={q.text} className="max-w-4xl text-3xl font-black sm:text-5xl" />
           <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
             {Math.max(1, Math.ceil(msToStart / 1000))}
           </div>
@@ -160,7 +161,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
               </span>
               <DifficultyBadge difficulty={q.difficulty} />
             </div>
-            <h2 className="text-2xl font-black sm:text-4xl">{q.text}</h2>
+            <RichText text={q.text} className="text-2xl font-black sm:text-4xl" />
           </div>
 
           <div className="flex items-center justify-between">
@@ -187,7 +188,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
               {q.explanation && (
                 <div className="rounded-xl bg-umber-dark/30 p-5">
                   <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-accent">Why?</p>
-                  <p className="text-lg">{q.explanation}</p>
+                  <RichText text={q.explanation} className="text-lg" />
                 </div>
               )}
               <Leaderboard rows={state.leaderboard} title="Top 5" />

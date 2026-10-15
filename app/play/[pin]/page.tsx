@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { RichText } from "@/components/RichText";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChoiceGrid, DifficultyBadge, Header, Leaderboard, Podium, TimerRing, useCountdown } from "@/components/ui";
@@ -118,11 +119,11 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
         <section className="flex flex-1 flex-col gap-4 px-4">
           <div className="flex items-center gap-4">
             <TimerRing msLeft={msLeft} total={q.timeLimit} />
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2 text-sm font-bold text-cream/75">
                 {state.index + 1} / {state.total} <DifficultyBadge difficulty={q.difficulty} />
               </div>
-              <h2 className="text-xl font-black sm:text-2xl">{q.text}</h2>
+              <RichText text={q.text} className="text-xl font-black sm:text-2xl" />
             </div>
           </div>
           {myChoice === null ? (
@@ -155,12 +156,12 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
               </div>
             );
           })()}
-          <h2 className="text-lg font-bold">{q.text}</h2>
+          <RichText text={q.text} className="text-lg font-bold" />
           <ChoiceGrid choices={q.choices} answer={q.answer} picked={myChoice} distribution={q.distribution} />
           {q.explanation && (
             <div className="rounded-xl bg-umber-dark/30 p-4">
               <p className="mb-1 text-sm font-extrabold uppercase tracking-wider text-accent">Why?</p>
-              <p>{q.explanation}</p>
+              <RichText text={q.explanation} />
             </div>
           )}
           <p className="text-center text-sm text-cream/70">Waiting for the host to continue…</p>

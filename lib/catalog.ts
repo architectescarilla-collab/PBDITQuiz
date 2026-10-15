@@ -1,6 +1,8 @@
 import type { Lesson, Topic } from "./types";
 import { introToNetworksQuestions } from "./questions/network-fundamentals/lesson-1-intro-to-networks";
 import { osiLayersQuestions } from "./questions/network-fundamentals/lesson-2-osi-layers";
+import { introToPythonQuestions } from "./questions/programming-fundamentals/lesson-1-2-intro-to-python";
+import { loopsAndCollectionsQuestions } from "./questions/programming-fundamentals/lesson-2b-3b-loops-and-collections";
 
 export const TOPICS: Topic[] = [
   {
@@ -28,9 +30,24 @@ export const TOPICS: Topic[] = [
   {
     id: "programming-fundamentals",
     title: "Programming Fundamentals",
-    description: "Logic, variables, control flow and problem solving.",
-    status: "coming-soon",
-    lessons: [],
+    description: "Python basics, loops and collections — with real code to read.",
+    status: "available",
+    lessons: [
+      {
+        id: "lesson-1-2-intro-to-python",
+        title: "Lessons 1–2",
+        subtitle: "Introduction to Python: Basic Concepts and Structures",
+        status: "available",
+        questions: introToPythonQuestions,
+      },
+      {
+        id: "lesson-2b-3b-loops-and-collections",
+        title: "Lessons 2b–3b",
+        subtitle: "Loops, Lists & Tuples, Sets & Dictionaries",
+        status: "available",
+        questions: loopsAndCollectionsQuestions,
+      },
+    ],
   },
   {
     id: "information-management",
