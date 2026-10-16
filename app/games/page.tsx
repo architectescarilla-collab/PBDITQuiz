@@ -10,6 +10,14 @@ const GAMES = [
     title: "Flappy Boji",
     blurb: "Tap to fly between skyscrapers. How many towers can you clear?",
     tag: "Arcade",
+    art: "flappy",
+  },
+  {
+    href: "/games/pbdit-kart",
+    title: "PBDIT Kart",
+    blurb: "Kart racing with Python, HTML, C# and Java. Grab power-ups and race to the line!",
+    tag: "Racing",
+    art: "kart",
   },
 ];
 
@@ -28,20 +36,37 @@ export default function GamesPage() {
               href={g.href}
               className="group overflow-hidden rounded-2xl border-2 border-cream/15 bg-cream/5 transition hover:border-accent"
             >
-              <div className="relative flex h-44 items-end justify-center overflow-hidden bg-gradient-to-b from-[#d9c6a5] to-[#cdb894]">
-                {/* little skyline */}
-                <div className="absolute bottom-0 left-4 h-24 w-10 bg-choice-2" />
-                <div className="absolute bottom-0 left-16 h-16 w-8 bg-choice-1" />
-                <div className="absolute right-6 bottom-0 h-28 w-10 bg-choice-4" />
-                <div className="absolute right-20 bottom-0 h-14 w-8 bg-clay" />
-                <Image
-                  src="/games/bj-caricature.png"
-                  alt=""
-                  width={81}
-                  height={160}
-                  className="relative mb-3 -rotate-12 drop-shadow-lg transition group-hover:-translate-y-2 group-hover:rotate-0"
-                />
-              </div>
+              {g.art === "kart" ? (
+                <div className="relative flex h-44 items-end justify-center gap-2 overflow-hidden bg-gradient-to-b from-[#5fb8f5] to-[#e6f4ff] pb-6">
+                  <div className="absolute inset-x-0 bottom-0 h-8 bg-[#9aa6b5]" />
+                  <div className="absolute inset-x-0 bottom-3.5 h-1 bg-[repeating-linear-gradient(90deg,#3fd6f5_0_18px,transparent_18px_36px)]" />
+                  {["🐍", "🕷️", "🦈", "☕"].map((e, i) => (
+                    <span
+                      key={e}
+                      className="relative text-4xl drop-shadow-md transition group-hover:-translate-y-1"
+                      style={{ transitionDelay: `${i * 60}ms` }}
+                    >
+                      {e}
+                    </span>
+                  ))}
+                  <span className="absolute top-3 right-4 text-2xl">🏁</span>
+                </div>
+              ) : (
+                <div className="relative flex h-44 items-end justify-center overflow-hidden bg-gradient-to-b from-[#d9c6a5] to-[#cdb894]">
+                  {/* little skyline */}
+                  <div className="absolute bottom-0 left-4 h-24 w-10 bg-choice-2" />
+                  <div className="absolute bottom-0 left-16 h-16 w-8 bg-choice-1" />
+                  <div className="absolute right-6 bottom-0 h-28 w-10 bg-choice-4" />
+                  <div className="absolute right-20 bottom-0 h-14 w-8 bg-clay" />
+                  <Image
+                    src="/games/bj-caricature.png"
+                    alt=""
+                    width={81}
+                    height={160}
+                    className="relative mb-3 -rotate-12 drop-shadow-lg transition group-hover:-translate-y-2 group-hover:rotate-0"
+                  />
+                </div>
+              )}
               <div className="p-5">
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-extrabold">{g.title}</span>
