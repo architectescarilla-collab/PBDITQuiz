@@ -6,8 +6,8 @@ export const metadata = { title: "Other Games · PBDIT Quiz" };
 
 const GAMES = [
   {
-    href: "/games/flappy-bj",
-    title: "Flappy BJ",
+    href: "/games/flappy-boji",
+    title: "Flappy Boji",
     blurb: "Tap to fly between skyscrapers. How many towers can you clear?",
     tag: "Arcade",
   },

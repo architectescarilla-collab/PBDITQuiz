@@ -18,6 +18,7 @@ const SPRITE_H = 86;
 const SPRITE_W = (SPRITE_H * 162) / 320; // keeps the image's aspect ratio
 const TOWER_W = 76;
 const TOWER_SPACING = 235;
+// Storage keys keep the original "flappy-bj" name so saved best scores survive the rename.
 const BEST_KEY = "flappy-bj:best";
 const MUTE_KEY = "flappy-bj:muted";
 
@@ -231,7 +232,7 @@ function draw(ctx: CanvasRenderingContext2D, w: World, img: HTMLImageElement | n
 /* Component                                                           */
 /* ------------------------------------------------------------------ */
 
-export function FlappyBJ() {
+export function FlappyBoji() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const world = useRef<World>(newWorld());
@@ -453,7 +454,7 @@ export function FlappyBJ() {
           flap();
         }}
       >
-        <canvas ref={canvasRef} className="block h-full w-full" aria-label="Flappy BJ game" role="img" />
+        <canvas ref={canvasRef} className="block h-full w-full" aria-label="Flappy Boji game" role="img" />
 
         <button
           type="button"
@@ -469,7 +470,7 @@ export function FlappyBJ() {
           <>
             <div className="pointer-events-none absolute inset-x-0 top-[11%] text-center text-ink">
               <p className="text-4xl font-black tracking-tight drop-shadow-sm">
-                Flappy <span className="text-clay">BJ</span>
+                Flappy <span className="text-clay">Boji</span>
               </p>
               <p className="mt-1 text-sm font-bold text-ink/70">Fly between the skyscrapers</p>
             </div>

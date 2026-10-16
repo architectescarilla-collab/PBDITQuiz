@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { FlappyBJ } from "@/components/games/FlappyBJ";
+import { FlappyBoji } from "@/components/games/FlappyBoji";
 import { Header } from "@/components/ui";
 
-export const metadata = { title: "Flappy BJ · PBDIT Quiz" };
+export const metadata = { title: "Flappy Boji · PBDIT Quiz" };
 
-export default function FlappyBJPage() {
+export default function FlappyBojiPage() {
   return (
     <main className="mx-auto max-w-5xl pb-6">
       <Header
@@ -15,7 +15,7 @@ export default function FlappyBJPage() {
         }
       />
       <div className="px-2 sm:px-6">
-        <FlappyBJ />
+        <FlappyBoji />
       </div>
     </main>
   );
