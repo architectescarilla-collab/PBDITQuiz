@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Sfx } from "./sfx";
 
 /* ------------------------------------------------------------------ */
 /* Tuning — all in logical pixels / seconds on a 400×640 playfield     */
@@ -18,6 +19,7 @@ const SPRITE_W = (SPRITE_H * 162) / 320; // keeps the image's aspect ratio
 const TOWER_W = 76;
 const TOWER_SPACING = 235;
 const BEST_KEY = "flappy-bj:best";
+const MUTE_KEY = "flappy-bj:muted";
 
 const TOWER_COLORS = ["#a85d45", "#4f6b78", "#5e6b45", "#8c5a3c", "#7b5e72"];
 
@@ -236,6 +238,8 @@ export function FlappyBJ() {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const overAt = useRef(0);
   const bestRef = useRef(0);
+  const [sfx] = useState(() => new Sfx());
+  const [muted, setMuted] = useState(false);
 
   const [phase, setPhase] = useState<Phase>("ready");
   const [score, setScore] = useState(0);
@@ -247,6 +251,9 @@ export function FlappyBJ() {
     try {
       bestRef.current = Number(localStorage.getItem(BEST_KEY)) || 0;
       setBest(bestRef.current);
+      const m = localStorage.getItem(MUTE_KEY) === "1";
+      sfx.muted = m;
+      setMuted(m);
     } catch {}
     const img = new Image();
     img.src = "/games/bj-caricature.png";
@@ -284,7 +291,17 @@ export function FlappyBJ() {
     }
   }, []);
 
+  const toggleMute = useCallback(() => {
+    const m = !sfx.muted;
+    sfx.muted = m;
+    setMuted(m);
+    try {
+      localStorage.setItem(MUTE_KEY, m ? "1" : "0");
+    } catch {}
+  }, [sfx]);
+
   const flap = useCallback(() => {
+    sfx.unlock(); // audio may only start after a user gesture
     const w = world.current;
     if (w.phase === "over") {
       if (performance.now() - overAt.current < 450) return; // avoid instant accidental restarts
@@ -301,7 +318,8 @@ export function FlappyBJ() {
       w.towers = [spawnTower(W + 60, 0)];
     }
     w.vy = FLAP;
-  }, []);
+    sfx.flap();
+  }, [sfx]);
 
   // Dev only: lets automated tests read the game state. Never shipped in production builds.
   useEffect(() => {
@@ -314,11 +332,13 @@ export function FlappyBJ() {
       if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
         e.preventDefault();
         if (!e.repeat) flap();
+      } else if (e.code === "KeyM" && !e.repeat) {
+        toggleMute();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flap]);
+  }, [flap, toggleMute]);
 
   // Game loop
   useEffect(() => {
@@ -348,7 +368,12 @@ export function FlappyBJ() {
       const floor = H - GROUND - SPRITE_H * 0.42;
       if (w.y >= floor) {
         w.y = floor;
-        if (w.phase === "playing") w.flash = 0.8;
+        if (w.phase === "playing") {
+          w.flash = 0.8;
+          sfx.crash();
+        } else {
+          sfx.land(); // falling after a tower crash
+        }
         finish();
         return;
       }
@@ -379,6 +404,7 @@ export function FlappyBJ() {
           ) {
             w.phase = "dying";
             w.flash = 0.8;
+            sfx.crash();
             w.vy = Math.max(w.vy, 120);
             setPhase("dying");
             return;
@@ -412,7 +438,7 @@ export function FlappyBJ() {
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [finish]);
+  }, [finish, sfx]);
 
   const medal = MEDALS.find((m) => score >= m.min);
 
@@ -428,6 +454,16 @@ export function FlappyBJ() {
         }}
       >
         <canvas ref={canvasRef} className="block h-full w-full" aria-label="Flappy BJ game" role="img" />
+
+        <button
+          type="button"
+          onClick={toggleMute}
+          aria-label={muted ? "Turn sound on (M)" : "Mute sound (M)"}
+          title={muted ? "Sound off — press M" : "Sound on — press M"}
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-umber/80 text-lg text-cream shadow transition hover:bg-umber"
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
 
         {phase === "ready" && (
           <>
