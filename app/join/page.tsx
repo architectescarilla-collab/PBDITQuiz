@@ -62,7 +62,7 @@ function JoinForm() {
 
 export default function JoinPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col">
+    <main className="mx-auto flex min-h-[calc(100dvh-45px)] max-w-5xl flex-col">
       <Header />
       <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4">
         <h1 className="text-4xl font-black">Join a game</h1>

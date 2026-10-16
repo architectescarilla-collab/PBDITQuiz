@@ -12,7 +12,7 @@ export default function HostSetupPage() {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl pb-16">
+    <main className="mx-auto min-h-[calc(100dvh-45px)] max-w-5xl pb-16">
       <Header />
       <div className="px-4 sm:px-6">
         <h1 className="mb-6 text-3xl font-black">Host a live game</h1>

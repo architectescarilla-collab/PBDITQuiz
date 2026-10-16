@@ -27,7 +27,7 @@ export default function Home() {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col">
+    <main className="mx-auto flex min-h-[calc(100dvh-45px)] max-w-5xl flex-col">
       <Header />
       <div className="flex flex-1 flex-col items-center justify-center gap-10 px-4 py-10">
         <div className="text-center">

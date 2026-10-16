@@ -91,7 +91,7 @@ export default function PracticePage() {
   const correctCount = log.filter((a) => a.choice === a.q.answer).length;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col pb-16">
+    <main className="mx-auto flex min-h-[calc(100dvh-45px)] max-w-4xl flex-col pb-16">
       <Header
         right={
           phase !== "setup" && (

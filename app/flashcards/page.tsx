@@ -34,7 +34,7 @@ export default function FlashcardsPage() {
   const [setup, setSetup] = useState<SetupResult | null>(null);
 
   return (
-    <main className="mx-auto min-h-screen max-w-4xl pb-16">
+    <main className="mx-auto min-h-[calc(100dvh-45px)] max-w-4xl pb-16">
       <Header
         right={
           setup && (

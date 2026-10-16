@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SiteTabs } from "@/components/SiteTabs";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <SiteTabs />
+        {children}
+      </body>
     </html>
   );
 }

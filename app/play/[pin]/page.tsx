@@ -37,7 +37,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
   const msToStart = useCountdown(q && state?.phase === "countdown" ? toLocal(q.startsAt) : null);
 
   if (!state) {
-    return <main className="flex min-h-screen items-center justify-center text-xl font-bold">{error ?? "Connecting…"}</main>;
+    return <main className="flex min-h-[calc(100dvh-45px)] items-center justify-center text-xl font-bold">{error ?? "Connecting…"}</main>;
   }
 
   if (!state.me) {
@@ -77,7 +77,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col pb-24">
+    <main className="mx-auto flex min-h-[calc(100dvh-45px)] max-w-3xl flex-col pb-24">
       <Header
         right={
           <span className="rounded-lg bg-cream/15 px-3 py-1 text-sm font-bold">

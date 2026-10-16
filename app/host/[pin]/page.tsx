@@ -51,7 +51,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
 
   if (!state) {
     return (
-      <main className="flex min-h-screen items-center justify-center text-xl font-bold">
+      <main className="flex min-h-[calc(100dvh-45px)] items-center justify-center text-xl font-bold">
         {error ?? "Loading game…"}
       </main>
     );
@@ -74,7 +74,7 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
   const isLast = state.index + 1 >= state.total;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col pb-10">
+    <main className="mx-auto flex min-h-[calc(100dvh-45px)] max-w-6xl flex-col pb-10">
       <Header
         right={
           <div className="flex items-center gap-3 text-sm font-bold">
