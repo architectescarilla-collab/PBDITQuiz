@@ -2,7 +2,7 @@
  * PBDIT Kart race engine — pure simulation (no rendering), stepped at a fixed rate.
  * Handles driving physics, walls, laps, standings, item boxes, power-ups and AI drivers.
  */
-import { lateralOffset, nearestIndex, pointAt, ROAD_HALF, TRACK, TRACK_SAMPLES, WALL, wrap } from "./track.ts";
+import { lateralOffset, nearestIndex, pointAt, ROAD_HALF, TRACK_SAMPLES, WALL, wrap, type Track } from "./track.ts";
 
 export type CharId = "python" | "html" | "csharp" | "java";
 export type ItemKind = "boost" | "freeze" | "shield" | "swap";
@@ -98,6 +98,7 @@ export type RaceEvent =
   | { type: "finish"; racer: number; place: number };
 
 export interface Race {
+  track: Track;
   racers: Racer[];
   boxes: ItemBox[];
   time: number; // seconds since GO (negative during countdown)
@@ -112,7 +113,7 @@ const NAMES: Record<CharId, string> = { python: "Python", html: "HTML", csharp: 
 /* Setup                                                               */
 /* ------------------------------------------------------------------ */
 
-export function createRace(playerChar: CharId | null, count: number): Race {
+export function createRace(track: Track, playerChar: CharId | null, count: number): Race {
   const order: CharId[] = ["python", "html", "csharp", "java"];
   const chars: CharId[] = playerChar ? [playerChar, ...order.filter((c) => c !== playerChar)] : order;
   const n = Math.max(1, Math.min(4, count));
@@ -122,7 +123,7 @@ export function createRace(playerChar: CharId | null, count: number): Race {
     const row = Math.floor(slot / 2);
     const idx = wrap(-8 - row * 9);
     const lateral = slot % 2 === 0 ? 4 : -4;
-    const p = pointAt(idx, lateral);
+    const p = pointAt(track, idx, lateral);
     return {
       id: i,
       char,
@@ -157,11 +158,11 @@ export function createRace(playerChar: CharId | null, count: number): Race {
   for (const f of [0.17, 0.45, 0.73]) {
     for (const lateral of [-7, -2.5, 2.5, 7]) {
       const idx = Math.round(f * TRACK_SAMPLES);
-      const p = pointAt(idx, lateral);
+      const p = pointAt(track, idx, lateral);
       boxes.push({ idx, lateral, x: p.x, z: p.z, respawn: 0 });
     }
   }
-  return { racers, boxes, time: -COUNTDOWN, state: "countdown", events: [], finishedCount: 0 };
+  return { track, racers, boxes, time: -COUNTDOWN, state: "countdown", events: [], finishedCount: 0 };
 }
 
 /* ------------------------------------------------------------------ */
@@ -261,7 +262,7 @@ export function aiInput(race: Race, r: Racer, dt: number): Input {
     r.aiLaneT = 2 + Math.random() * 3;
   }
   const look = 10 + r.speed * 0.45;
-  const target = pointAt(r.idx + Math.round(look / 0.85), r.aiLane);
+  const target = pointAt(race.track, r.idx + Math.round(look / race.track.spacing), r.aiLane);
   const want = Math.atan2(target.z - r.z, target.x - r.x);
   let diff = want - r.heading;
   while (diff > Math.PI) diff -= Math.PI * 2;
@@ -356,11 +357,11 @@ function stepRacer(
 
   // track position, walls and off-road
   const prev = r.idx;
-  r.idx = nearestIndex(r.x, r.z, r.idx);
-  let lat = lateralOffset(r.x, r.z, r.idx);
+  r.idx = nearestIndex(race.track, r.x, r.z, r.idx);
+  let lat = lateralOffset(race.track, r.x, r.z, r.idx);
   r.offroad = Math.abs(lat) > ROAD_HALF;
   if (Math.abs(lat) > WALL - KART_RADIUS) {
-    const p = TRACK[r.idx];
+    const p = race.track.points[r.idx];
     const clamp = Math.sign(lat) * (WALL - KART_RADIUS);
     r.x += p.nx * (clamp - lat);
     r.z += p.nz * (clamp - lat);

@@ -18,7 +18,7 @@ import {
   type Racer,
 } from "./engine.ts";
 import { KartSfx } from "./sfx.ts";
-import { TRACK } from "./track.ts";
+import { getTrack, TRACK_DEFS, type TrackDef } from "./track.ts";
 
 export const ITEMS: Record<ItemKind, { icon: string; name: string; desc: string }> = {
   boost: { icon: "⚡", name: "Turbo Boost", desc: "A burst of top speed." },
@@ -29,6 +29,15 @@ export const ITEMS: Record<ItemKind, { icon: string; name: string; desc: string 
 
 const ORDER: CharId[] = ["python", "html", "csharp", "java"];
 const MUTE_KEY = "pbdit-kart:muted";
+const bestKey = (trackId: string) => `pbdit-kart:best:${trackId}`;
+function readBest(trackId: string): number | null {
+  try {
+    const v = Number(localStorage.getItem(bestKey(trackId)));
+    return v > 0 ? v : null;
+  } catch {
+    return null;
+  }
+}
 const ordinal = (n: number) => `${n}${["th", "st", "nd", "rd"][n % 100 > 10 && n % 100 < 14 ? 0 : n % 10] ?? "th"}`;
 const fmtTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toFixed(2).padStart(5, "0")}`;
 
@@ -40,12 +49,16 @@ export function KartGame() {
   const [screen, setScreen] = useState<"select" | "race" | "results">("select");
   const [char, setChar] = useState<CharId>("python");
   const [count, setCount] = useState(4);
+  const [trackId, setTrackId] = useState(TRACK_DEFS[0].id);
+  const [bests, setBests] = useState<Record<string, number | null>>({});
+  const [newBest, setNewBest] = useState(false);
   const [runId, setRunId] = useState(0);
   const [results, setResults] = useState<Racer[]>([]);
   const [sfx] = useState(() => new KartSfx());
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
+    setBests(Object.fromEntries(TRACK_DEFS.map((d) => [d.id, readBest(d.id)])));
     try {
       const m = localStorage.getItem(MUTE_KEY) === "1";
       sfx.muted = m;
@@ -75,10 +88,22 @@ export function KartGame() {
         key={runId}
         char={char}
         count={count}
+        trackId={trackId}
         sfx={sfx}
         muted={muted}
         onToggleMute={toggleMute}
         onFinish={(r) => {
+          // personal best per track (only when you actually crossed the line)
+          const me = r.find((x) => x.isPlayer);
+          const prev = readBest(trackId);
+          const better = me?.finishTime != null && (prev === null || me.finishTime < prev);
+          if (better && me?.finishTime != null) {
+            try {
+              localStorage.setItem(bestKey(trackId), String(me.finishTime));
+            } catch {}
+            setBests((b) => ({ ...b, [trackId]: me.finishTime }));
+          }
+          setNewBest(better);
           setResults(r);
           setScreen("results");
         }}
@@ -87,8 +112,29 @@ export function KartGame() {
       />
     );
   }
-  if (screen === "results") return <Results results={results} onAgain={start} onChange={() => setScreen("select")} />;
-  return <Select char={char} setChar={setChar} count={count} setCount={setCount} onStart={start} />;
+  if (screen === "results")
+    return (
+      <Results
+        results={results}
+        track={TRACK_DEFS.find((d) => d.id === trackId) ?? TRACK_DEFS[0]}
+        best={bests[trackId] ?? null}
+        newBest={newBest}
+        onAgain={start}
+        onChange={() => setScreen("select")}
+      />
+    );
+  return (
+    <Select
+      char={char}
+      setChar={setChar}
+      count={count}
+      setCount={setCount}
+      trackId={trackId}
+      setTrackId={setTrackId}
+      bests={bests}
+      onStart={start}
+    />
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -107,14 +153,46 @@ function Bar({ label, value }: { label: string; value: number }) {
   );
 }
 
+/** Top-down outline of a circuit, drawn in its theme colours. */
+function TrackPreview({ def }: { def: TrackDef }) {
+  const pts = getTrack(def.id).points.filter((_, i) => i % 8 === 0);
+  const xs = pts.map((p) => p.x);
+  const zs = pts.map((p) => p.z);
+  const pad = 22;
+  const [x0, z0] = [Math.min(...xs) - pad, Math.min(...zs) - pad];
+  const [w, h] = [Math.max(...xs) + pad - x0, Math.max(...zs) + pad - z0];
+  const d = pts.map((p, i) => `${i ? "L" : "M"}${(p.x - x0).toFixed(1)} ${(p.z - z0).toFixed(1)}`).join(" ") + " Z";
+  const start = pts[0];
+  return (
+    <div className="h-36 w-full" style={{ background: `linear-gradient(${def.theme.skyTop}, ${def.theme.horizon})` }}>
+      <svg viewBox={`0 0 ${w} ${h}`} className="h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden>
+        <path d={d} fill="none" stroke="rgba(31,27,22,0.35)" strokeWidth={30} strokeLinejoin="round" />
+        <path d={d} fill="none" stroke={def.theme.road} strokeWidth={22} strokeLinejoin="round" />
+        <path
+          d={d}
+          fill="none"
+          stroke={def.theme.accent}
+          strokeWidth={3}
+          strokeDasharray="10 10"
+          strokeLinejoin="round"
+        />
+        <circle cx={start.x - x0} cy={start.z - z0} r={11} fill="#ffffff" stroke="#1d2733" strokeWidth={4} />
+      </svg>
+    </div>
+  );
+}
+
 function Select(props: {
   char: CharId;
   setChar: (c: CharId) => void;
   count: number;
   setCount: (n: number) => void;
+  trackId: string;
+  setTrackId: (id: string) => void;
+  bests: Record<string, number | null>;
   onStart: () => void;
 }) {
-  const { char, setChar, count, setCount, onStart } = props;
+  const { char, setChar, count, setCount, trackId, setTrackId, bests, onStart } = props;
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 pb-16 sm:px-6">
       <div>
@@ -125,7 +203,7 @@ function Select(props: {
           PBDIT <span className="text-accent">Kart</span>
         </h1>
         <p className="mt-1 text-cream/75">
-          Race the IT crew around a daytime cyber circuit. 3 laps, power-ups, no mercy.
+          Race the IT crew around three daytime circuits. 3 laps, power-ups, no mercy.
         </p>
       </div>
 
@@ -170,7 +248,44 @@ function Select(props: {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-extrabold">2. How many racers?</h2>
+        <h2 className="text-lg font-extrabold">2. Choose a track</h2>
+        <div className="grid gap-3 md:grid-cols-3">
+          {TRACK_DEFS.map((d) => {
+            const on = trackId === d.id;
+            const best = bests[d.id];
+            return (
+              <button
+                key={d.id}
+                type="button"
+                onClick={() => setTrackId(d.id)}
+                aria-pressed={on}
+                className={`overflow-hidden rounded-2xl border-4 bg-paper text-left text-ink transition ${on ? "border-accent shadow-xl" : "border-transparent opacity-85 hover:opacity-100"}`}
+              >
+                <TrackPreview def={d} />
+                <div className="p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-lg font-black">{d.name}</span>
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-extrabold text-cream ${
+                        d.difficulty === "Easy" ? "bg-easy" : d.difficulty === "Medium" ? "bg-hard" : "bg-tricky"
+                      }`}
+                    >
+                      {d.difficulty}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-ink/75">{d.tagline}</p>
+                  <p className="mt-2 text-xs font-bold text-ink/60">
+                    {best ? `🏆 Your best: ${fmtTime(best)}` : "No best time yet"}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-extrabold">3. How many racers?</h2>
         <div className="flex gap-3">
           {[2, 3, 4].map((n) => (
             <button
@@ -247,6 +362,7 @@ interface Hud {
 function RaceScreen(props: {
   char: CharId;
   count: number;
+  trackId: string;
   sfx: KartSfx;
   muted: boolean;
   onToggleMute: () => void;
@@ -254,7 +370,7 @@ function RaceScreen(props: {
   onRestart: () => void;
   onQuit: () => void;
 }) {
-  const { char, count, sfx, muted, onToggleMute, onFinish, onRestart, onQuit } = props;
+  const { char, count, trackId, sfx, muted, onToggleMute, onFinish, onRestart, onQuit } = props;
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLCanvasElement>(null);
   const raceRef = useRef<Race | null>(null);
@@ -349,7 +465,7 @@ function RaceScreen(props: {
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    const race = createRace(char, count);
+    const race = createRace(getTrack(trackId), char, count);
     raceRef.current = race;
     // Dev only: lets automated tests read the race and borrow the AI's steering. Never in production builds.
     if (process.env.NODE_ENV !== "production") (window as unknown as { __kart?: unknown }).__kart = { race, aiInput };
@@ -445,6 +561,7 @@ function RaceScreen(props: {
       race.events.length = 0;
     };
 
+    const TRACK = race.track.points;
     const xs = TRACK.map((p) => p.x);
     const zs = TRACK.map((p) => p.z);
     const [x0, x1, z0, z1] = [Math.min(...xs), Math.max(...xs), Math.min(...zs), Math.max(...zs)];
@@ -553,7 +670,7 @@ function RaceScreen(props: {
       sfx.stop();
       view?.dispose();
     };
-  }, [char, count, sfx, flash, setPause]);
+  }, [char, count, trackId, sfx, flash, setPause]);
 
   const hold = (key: keyof typeof touch.current) => ({
     onPointerDown: (e: React.PointerEvent) => {
@@ -753,7 +870,15 @@ function RaceScreen(props: {
 /* Results                                                             */
 /* ------------------------------------------------------------------ */
 
-function Results({ results, onAgain, onChange }: { results: Racer[]; onAgain: () => void; onChange: () => void }) {
+function Results(props: {
+  results: Racer[];
+  track: TrackDef;
+  best: number | null;
+  newBest: boolean;
+  onAgain: () => void;
+  onChange: () => void;
+}) {
+  const { results, track, best, newBest, onAgain, onChange } = props;
   const me = results.find((r) => r.isPlayer);
   const winner = results[0];
   return (
@@ -763,10 +888,18 @@ function Results({ results, onAgain, onChange }: { results: Racer[]; onAgain: ()
         <h1 className="mt-2 text-4xl font-black">
           {me?.place === 1 ? "You win!" : `You finished ${ordinal(me?.place ?? 0)}`}
         </h1>
+        <p className="mt-1 text-sm font-bold text-accent">{track.name}</p>
         {me?.place !== 1 && (
           <p className="mt-1 text-cream/75">
             {CAST[winner.char].emoji} {winner.name} took the win.
           </p>
+        )}
+        {newBest ? (
+          <p className="animate-pop mt-3 inline-block rounded-full bg-accent px-4 py-1.5 font-extrabold text-ink">
+            🎉 New best time on this track!
+          </p>
+        ) : (
+          best && <p className="mt-3 text-sm text-cream/70">Your best here: {fmtTime(best)}</p>
         )}
       </div>
       <ol className="space-y-2 text-left">

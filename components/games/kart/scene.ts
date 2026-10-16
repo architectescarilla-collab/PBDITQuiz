@@ -6,10 +6,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { buildRacer, CAST } from "./characters.ts";
 import type { Race, RaceEvent, Racer } from "./engine.ts";
-import { ROAD_HALF, TRACK, TRACK_LENGTH, WALL } from "./track.ts";
-
-const SKY_TOP = new THREE.Color("#5fb8f5");
-const HORIZON = new THREE.Color("#e6f4ff");
+import { ROAD_HALF, WALL, type Track, type TrackPoint } from "./track.ts";
 
 /* ------------------------------------------------------------------ */
 /* Canvas textures                                                     */
@@ -27,9 +24,9 @@ function canvasTexture(w: number, h: number, paint: (c: CanvasRenderingContext2D
   return t;
 }
 
-function roadTexture() {
+function roadTexture(road: string, accent: string) {
   return canvasTexture(256, 256, (c) => {
-    c.fillStyle = "#9aa6b5";
+    c.fillStyle = road;
     c.fillRect(0, 0, 256, 256);
     // subtle "circuit traces"
     c.strokeStyle = "rgba(255,255,255,0.16)";
@@ -51,14 +48,14 @@ function roadTexture() {
     c.fillStyle = "#ffffff";
     c.fillRect(6, 0, 7, 256);
     c.fillRect(243, 0, 7, 256);
-    c.fillStyle = "#3fd6f5";
+    c.fillStyle = accent;
     c.fillRect(124, 0, 8, 120);
   });
 }
 
-function curbTexture() {
+function curbTexture(accent: string) {
   return canvasTexture(32, 64, (c) => {
-    c.fillStyle = "#38c9ee";
+    c.fillStyle = accent;
     c.fillRect(0, 0, 32, 32);
     c.fillStyle = "#ffffff";
     c.fillRect(0, 32, 32, 32);
@@ -122,16 +119,16 @@ function textTexture(
 /* ------------------------------------------------------------------ */
 
 /** A flat ribbon between two lateral offsets along the whole track. */
-function ribbon(inner: number, outer: number, y: number, vScale: number) {
+function ribbon(pts: TrackPoint[], inner: number, outer: number, y: number, vScale: number) {
   const pos: number[] = [];
   const uv: number[] = [];
   const idx: number[] = [];
   let dist = 0;
-  const n = TRACK.length;
+  const n = pts.length;
   for (let i = 0; i <= n; i++) {
-    const p = TRACK[i % n];
+    const p = pts[i % n];
     if (i > 0) {
-      const q = TRACK[i - 1];
+      const q = pts[i - 1];
       dist += Math.hypot(p.x - q.x, p.z - q.z);
     }
     pos.push(p.x + p.nx * inner, y, p.z + p.nz * inner, p.x + p.nx * outer, y, p.z + p.nz * outer);
@@ -150,12 +147,12 @@ function ribbon(inner: number, outer: number, y: number, vScale: number) {
 }
 
 /** A vertical wall ribbon at a lateral offset. */
-function wall(lateral: number, y0: number, y1: number) {
+function wall(pts: TrackPoint[], lateral: number, y0: number, y1: number) {
   const pos: number[] = [];
   const idx: number[] = [];
-  const n = TRACK.length;
+  const n = pts.length;
   for (let i = 0; i <= n; i++) {
-    const p = TRACK[i % n];
+    const p = pts[i % n];
     const x = p.x + p.nx * lateral;
     const z = p.z + p.nz * lateral;
     pos.push(x, y0, z, x, y1, z);
@@ -176,9 +173,9 @@ function at<T extends THREE.Object3D>(o: T, x: number, y: number, z: number): T 
   return o;
 }
 
-function nearTrack(x: number, z: number, margin: number) {
-  for (let i = 0; i < TRACK.length; i += 4) {
-    const p = TRACK[i];
+function nearTrack(pts: TrackPoint[], x: number, z: number, margin: number) {
+  for (let i = 0; i < pts.length; i += 4) {
+    const p = pts[i];
     if ((p.x - x) ** 2 + (p.z - z) ** 2 < margin * margin) return true;
   }
   return false;
@@ -188,22 +185,11 @@ function nearTrack(x: number, z: number, margin: number) {
 /* World                                                               */
 /* ------------------------------------------------------------------ */
 
-const CODE_SIGNS = [
-  "print('go!')",
-  "<div>",
-  "public class",
-  "Console.Write",
-  "def race():",
-  "</>",
-  "{ }",
-  "01101",
-  "PBDIT",
-  "=> fast",
-  "import speed",
-  "<html>",
-];
-
-function buildWorld(scene: THREE.Scene) {
+function buildWorld(scene: THREE.Scene, track: Track) {
+  const pts = track.points;
+  const th = track.theme;
+  const HORIZON = new THREE.Color(th.horizon);
+  const SKY_TOP = new THREE.Color(th.skyTop);
   scene.fog = new THREE.Fog(HORIZON, 260, 760);
 
   // sky dome
@@ -228,7 +214,7 @@ function buildWorld(scene: THREE.Scene) {
   scene.add(sun);
 
   // ground: a pale mint "data grid"
-  const groundTex = gridTexture("#c9ecd9", "rgba(255,255,255,0.75)");
+  const groundTex = gridTexture(th.ground, th.groundLine);
   groundTex.repeat.set(160, 160);
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(1600, 1600),
@@ -239,15 +225,15 @@ function buildWorld(scene: THREE.Scene) {
   scene.add(ground);
 
   // road, curbs and run-off
-  const road = new THREE.MeshStandardMaterial({ map: roadTexture(), roughness: 0.85 });
-  scene.add(new THREE.Mesh(ribbon(-ROAD_HALF, ROAD_HALF, 0.02, ROAD_HALF * 2), road));
-  const curbMat = new THREE.MeshStandardMaterial({ map: curbTexture(), roughness: 0.7 });
-  scene.add(new THREE.Mesh(ribbon(ROAD_HALF, ROAD_HALF + 1.4, 0.04, 4), curbMat));
-  scene.add(new THREE.Mesh(ribbon(-ROAD_HALF - 1.4, -ROAD_HALF, 0.04, 4), curbMat));
-  const runTex = gridTexture("#e9f3f0", "rgba(120,200,210,0.6)", 64);
+  const road = new THREE.MeshStandardMaterial({ map: roadTexture(th.road, th.accent), roughness: 0.85 });
+  scene.add(new THREE.Mesh(ribbon(pts, -ROAD_HALF, ROAD_HALF, 0.02, ROAD_HALF * 2), road));
+  const curbMat = new THREE.MeshStandardMaterial({ map: curbTexture(th.accent), roughness: 0.7 });
+  scene.add(new THREE.Mesh(ribbon(pts, ROAD_HALF, ROAD_HALF + 1.4, 0.04, 4), curbMat));
+  scene.add(new THREE.Mesh(ribbon(pts, -ROAD_HALF - 1.4, -ROAD_HALF, 0.04, 4), curbMat));
+  const runTex = gridTexture(th.runoff, "rgba(120,170,190,0.45)", 64);
   const runMat = new THREE.MeshStandardMaterial({ map: runTex, roughness: 0.9 });
-  scene.add(new THREE.Mesh(ribbon(ROAD_HALF + 1.4, WALL, 0.03, 4), runMat));
-  scene.add(new THREE.Mesh(ribbon(-WALL, -ROAD_HALF - 1.4, 0.03, 4), runMat));
+  scene.add(new THREE.Mesh(ribbon(pts, ROAD_HALF + 1.4, WALL, 0.03, 4), runMat));
+  scene.add(new THREE.Mesh(ribbon(pts, -WALL, -ROAD_HALF - 1.4, 0.03, 4), runMat));
 
   // glass barriers with a white top rail
   const glass = new THREE.MeshStandardMaterial({
@@ -260,12 +246,12 @@ function buildWorld(scene: THREE.Scene) {
   });
   const rail = new THREE.MeshStandardMaterial({ color: "#ffffff", side: THREE.DoubleSide, roughness: 0.4 });
   for (const s of [-1, 1]) {
-    scene.add(new THREE.Mesh(wall(s * WALL, 0, 1.3), glass));
-    scene.add(new THREE.Mesh(wall(s * WALL, 1.3, 1.6), rail));
+    scene.add(new THREE.Mesh(wall(pts, s * WALL, 0, 1.3), glass));
+    scene.add(new THREE.Mesh(wall(pts, s * WALL, 1.3, 1.6), rail));
   }
 
   // start / finish line + gantry
-  const start = TRACK[0];
+  const start = pts[0];
   const heading = Math.atan2(start.tz, start.tx);
   // checkered line: 2 squares along the direction of travel (local X), 16 across the road (local Z)
   const checker = canvasTexture(
@@ -293,7 +279,7 @@ function buildWorld(scene: THREE.Scene) {
 
   const gantry = new THREE.Group();
   const white = new THREE.MeshStandardMaterial({ color: "#f4f8fb", roughness: 0.35, metalness: 0.3 });
-  const cyan = new THREE.MeshStandardMaterial({ color: "#3fd6f5", emissive: "#3fd6f5", emissiveIntensity: 0.6 });
+  const cyan = new THREE.MeshStandardMaterial({ color: th.accent, emissive: th.accent, emissiveIntensity: 0.6 });
   for (const s of [-1, 1]) {
     gantry.add(at(new THREE.Mesh(new THREE.BoxGeometry(1.2, 11, 1.2), white), 0, 5.5, s * (WALL + 0.8)));
     gantry.add(at(new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.3, 1.3), cyan), 0, 9, s * (WALL + 0.8)));
@@ -332,8 +318,8 @@ function buildWorld(scene: THREE.Scene) {
   };
 
   // scenery around (and inside) the circuit
-  const xs = TRACK.map((p) => p.x);
-  const zs = TRACK.map((p) => p.z);
+  const xs = pts.map((p) => p.x);
+  const zs = pts.map((p) => p.z);
   const [minX, maxX, minZ, maxZ] = [
     Math.min(...xs) - 140,
     Math.max(...xs) + 140,
@@ -356,16 +342,30 @@ function buildWorld(scene: THREE.Scene) {
   const rackMat = new THREE.MeshStandardMaterial({ color: "#5d6b7a", roughness: 0.5, metalness: 0.4 });
   const leafMat = new THREE.MeshStandardMaterial({ color: "#56c2a3", roughness: 0.8 });
   const trunkMat = new THREE.MeshStandardMaterial({ color: "#d7d2c8", roughness: 0.8 });
+  const rockMat = new THREE.MeshStandardMaterial({ color: "#d9a877", roughness: 0.95 });
+  const rockMat2 = new THREE.MeshStandardMaterial({ color: "#c98f62", roughness: 0.95 });
+  const solarMat = new THREE.MeshStandardMaterial({ color: "#2f4f7a", roughness: 0.25, metalness: 0.6 });
+  type Kind = keyof typeof th.scenery;
+  const weights = Object.entries(th.scenery) as [Kind, number][];
+  const totalW = weights.reduce((n, [, w]) => n + w, 0);
+  const pickKind = (r: number): Kind => {
+    let v = r * totalW;
+    for (const [k, w] of weights) {
+      v -= w;
+      if (v <= 0) return k;
+    }
+    return "tree";
+  };
   const signs: THREE.Object3D[] = [];
   let placed = 0;
   for (let tries = 0; tries < 1400 && placed < 150; tries++) {
     const x = minX + rnd() * (maxX - minX);
     const z = minZ + rnd() * (maxZ - minZ);
-    const kind = rnd();
-    const margin = kind < 0.35 ? WALL + 22 : WALL + 9;
-    if (nearTrack(x, z, margin)) continue;
+    const kind = pickKind(rnd());
+    const margin = kind === "tower" || kind === "rock" ? WALL + 22 : WALL + 9;
+    if (nearTrack(pts, x, z, margin)) continue;
     placed++;
-    if (kind < 0.35) {
+    if (kind === "tower") {
       const h = 25 + rnd() * 70;
       const w = 9 + rnd() * 9;
       const t = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), towerMat);
@@ -377,7 +377,7 @@ function buildWorld(scene: THREE.Scene) {
         crown.position.set(x, h + 0.6, z);
         addStatic(crown);
       }
-    } else if (kind < 0.45) {
+    } else if (kind === "dome") {
       const r = 6 + rnd() * 8;
       const d = new THREE.Mesh(new THREE.SphereGeometry(r, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
       d.position.set(x, 0, z);
@@ -386,7 +386,7 @@ function buildWorld(scene: THREE.Scene) {
       ring.rotation.x = Math.PI / 2;
       ring.position.set(x, 0.4, z);
       addStatic(ring);
-    } else if (kind < 0.55) {
+    } else if (kind === "rack") {
       const h = 6 + rnd() * 6;
       const m = new THREE.Mesh(new THREE.BoxGeometry(3, h, 2), rackMat);
       m.position.set(x, h / 2, z);
@@ -398,14 +398,45 @@ function buildWorld(scene: THREE.Scene) {
         led.rotation.y = m.rotation.y;
         addStatic(led);
       }
-    } else if (kind < 0.62 && signs.length < 14) {
+    } else if (kind === "rock") {
+      // layered desert mesa
+      const r = 7 + rnd() * 9;
+      const h = 8 + rnd() * 16;
+      for (let k = 0; k < 3; k++) {
+        const layer = new THREE.Mesh(
+          new THREE.CylinderGeometry(r * (0.75 - k * 0.15), r * (0.85 - k * 0.15), h / 3, 7),
+          k % 2 ? rockMat2 : rockMat,
+        );
+        layer.position.set(x, (h / 3) * (k + 0.5), z);
+        layer.rotation.y = rnd() * Math.PI;
+        addStatic(layer);
+      }
+    } else if (kind === "solar") {
+      // a small field of tilted solar panels
+      const yaw = rnd() * Math.PI;
+      for (let a = 0; a < 3; a++) {
+        for (let b = 0; b < 2; b++) {
+          const ox = (a - 1) * 5.5;
+          const oz = (b - 0.5) * 6;
+          const px = x + Math.cos(yaw) * ox - Math.sin(yaw) * oz;
+          const pz = z + Math.sin(yaw) * ox + Math.cos(yaw) * oz;
+          const panel = new THREE.Mesh(new THREE.BoxGeometry(5, 0.25, 3.2), solarMat);
+          panel.position.set(px, 1.6, pz);
+          panel.rotation.set(0.45, yaw, 0, "YXZ");
+          addStatic(panel);
+          const post = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 1.6, 6), trunkMat);
+          post.position.set(px, 0.8, pz);
+          addStatic(post);
+        }
+      }
+    } else if (kind === "sign" && signs.length < 14) {
       // floating hologram billboard showing code
       const sign = new THREE.Group();
-      const text = CODE_SIGNS[signs.length % CODE_SIGNS.length];
+      const text = th.signs[signs.length % th.signs.length];
       const panel = new THREE.Mesh(
         new THREE.PlaneGeometry(14, 5.2),
         new THREE.MeshBasicMaterial({
-          map: textTexture(text, { bg: "rgba(255,255,255,0.78)", fg: "#0f6e8c", border: "#3fd6f5" }),
+          map: textTexture(text, { bg: "rgba(255,255,255,0.78)", fg: "#0f6e8c", border: th.accent }),
           transparent: true,
           side: THREE.DoubleSide,
         }),
@@ -417,13 +448,13 @@ function buildWorld(scene: THREE.Scene) {
       sign.add(pole);
       sign.position.set(x, 0, z);
       // face the nearest piece of track
-      let best = TRACK[0];
+      let best = pts[0];
       let bd = Infinity;
-      for (let i = 0; i < TRACK.length; i += 6) {
-        const d = (TRACK[i].x - x) ** 2 + (TRACK[i].z - z) ** 2;
+      for (let i = 0; i < pts.length; i += 6) {
+        const d = (pts[i].x - x) ** 2 + (pts[i].z - z) ** 2;
         if (d < bd) {
           bd = d;
-          best = TRACK[i];
+          best = pts[i];
         }
       }
       sign.lookAt(best.x, 0, best.z);
@@ -591,7 +622,7 @@ export class KartView {
     container.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.display = "block";
 
-    buildWorld(this.scene);
+    buildWorld(this.scene, race.track);
 
     const boxTex = canvasTexture(
       128,
@@ -784,5 +815,3 @@ export class KartView {
     this.renderer.domElement.remove();
   }
 }
-
-export { TRACK_LENGTH };
