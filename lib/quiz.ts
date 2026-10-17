@@ -38,10 +38,14 @@ export function countOptions(bank: Question[], mode: DifficultyMode): { value: n
   return opts;
 }
 
-/** Extra seconds for long questions (situations, code), so the timer measures thinking, not reading. */
-export function readingBonus(q: Pick<Question, "question" | "choices">): number {
+/** Wordy questions (situations, code) get a flat 40 seconds so the timer measures thinking, not reading. */
+export const WORDY_WORDS = 30;
+export const WORDY_TIME = 40;
+
+export function timeLimitFor(q: Pick<Question, "question" | "choices" | "difficulty">): number {
   const words = `${q.question} ${q.choices.join(" ")}`.split(/\s+/).filter(Boolean).length;
-  return Math.max(0, Math.min(20, Math.round((words - 20) / 4)));
+  const base = TIME_LIMITS[q.difficulty];
+  return words >= WORDY_WORDS ? Math.max(base, WORDY_TIME) : base;
 }
 
 function prepare(q: Question): PreparedQuestion {
@@ -53,7 +57,7 @@ function prepare(q: Question): PreparedQuestion {
     choices: order.map((i) => q.choices[i]),
     answer: order.indexOf(q.answer),
     explanation: q.explanation,
-    timeLimit: TIME_LIMITS[q.difficulty] + readingBonus(q),
+    timeLimit: timeLimitFor(q),
   };
 }
 

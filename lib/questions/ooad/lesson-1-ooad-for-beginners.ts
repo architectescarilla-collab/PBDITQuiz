@@ -109,9 +109,9 @@ const easy: Entry[] = [
   ["Situation: In \"The librarian records each loan\", what does the noun \"loan\" most likely become?",
     ["A class (Loan)", "A method", "A use case extension", "A design pattern"],
     "In the module's library example, the noun \"loan\" becomes the class Loan."],
-  ["Situation: In Java you write myCar.start();\n\nWhat is this called in OOP?",
-    ["Sending a message to the object", "Creating a class", "Inheriting a method", "Drawing a sequence diagram"],
-    "Calling an object's method is described as sending a message to that object."],
+  ["Situation: A classmate lists a Student's methods as: enroll, study, takeExam.\n\nAccording to the module, how should methods be written?",
+    ["As verbs with parentheses: enroll(), study(), takeExam()", "As nouns: enrollment, studies, exam", "In capital letters: ENROLL, STUDY", "With a minus sign: -enroll, -study"],
+    "Methods are verbs and are written with parentheses, like start(), brake() and accelerate()."],
   ["Situation: You want to draw UML just by typing simple text instead of dragging shapes.\n\nWhich free tool from the module fits best?",
     ["PlantUML", "diagrams.net", "Paper and pencil", "StarUML"],
     "PlantUML draws UML diagrams from typed text."],
@@ -184,9 +184,9 @@ const hard: Entry[] = [
   ["Situation: Your teacher says UML diagrams come in two big groups: some are like a PHOTO, others like a VIDEO.\n\nWhich are like a video?",
     ["Behavior diagrams — what the system does over time", "Structure diagrams — what the system is made of", "Class diagrams only", "None; all UML diagrams are photos"],
     "Structure diagrams are like a photo. Behavior diagrams (use case, sequence, activity) are like a video."],
-  ["Situation: A Singleton class must stop other code from writing new SchoolPrincipal().\n\nWhat is the key technique?",
-    ["Make the constructor private and provide getInstance()", "Make every attribute public", "Use «extend» arrows", "Create a new object for every request"],
-    "A private constructor blocks new. getInstance() always returns the same single object."],
+  ["Situation: The school app must make sure that no part of the program can create a second SchoolPrincipal object.\n\nWhat is the key technique of the Singleton pattern?",
+    ["Block outside creation (private constructor) and give one get_instance() method that always returns the same object", "Make every attribute public", "Use «extend» arrows", "Create a new object for every request"],
+    "Blocking outside creation stops extra copies, and get_instance() always hands back the same single object."],
   ["Situation: A delivery app must create a Motorcycle, Car or Bicycle object depending on the distance, without the rest of the code knowing how each is built.\n\nWhich pattern fits best?",
     ["Factory", "Singleton", "Observer", "Adapter"],
     "Factory puts creation in one place: you say what you need and it builds the right object."],
@@ -203,7 +203,7 @@ const hard: Entry[] = [
     ["A LibrarySettings Singleton", "A NotificationFactory", "An Observer on each book", "One settings object per member"],
     "Library rules live in one shared LibrarySettings object, which is a Singleton."],
   ["Situation: Members who reserved a book want to be told when it's returned.\n\nWhich design does the module suggest?",
-    ["Observer — members subscribe to the book and get notified", "Singleton — one member at a time", "Factory — create a new book", "Inheritance — Member extends Book"],
+    ["Observer — members subscribe to the book and get notified", "Singleton — one member at a time", "Factory — create a new book", "Inheritance — Member is a Book"],
     "Members subscribe to the book (Observer), and every subscriber is notified when it's returned."],
   ["Situation: A member prefers SMS, another email, another app alerts.\n\nWhich design from the case study fits creating the right notification?",
     ["A NotificationFactory", "A LibrarySettings Singleton", "Polymorphism by deleting classes", "An «include» arrow"],
@@ -277,7 +277,7 @@ const tricky: Entry[] = [
     ["Use «extend», because it happens only sometimes", "Keep «include», because it's related", "Use inheritance", "Use composition"],
     "«include» = always. «extend» = only sometimes, under a condition."],
   ["Situation: A classmate says, \"UML is a programming language, so we can run our class diagram.\"\n\nWhat is the best answer?",
-    ["No — UML is a drawing (modeling) language, not a programming language", "Yes — UML compiles to Java", "Yes — but only sequence diagrams", "No — UML is a database"],
+    ["No — UML is a drawing (modeling) language, not a programming language", "Yes — UML compiles to Python", "Yes — but only sequence diagrams", "No — UML is a database"],
     "UML is a standard drawing language for describing software, not a programming language."],
   ["Situation: A teammate wants to use Singleton for EVERY class \"to be safe\".\n\nWhat is the best advice?",
     ["Use Singleton only when there truly must be one object; overusing it makes programs hard to test", "Good idea: fewer objects is always better", "Use Factory instead for every class", "Singletons are required by UML"],
@@ -315,10 +315,10 @@ const tricky: Entry[] = [
   ["Situation: In OOAD, after testing you find a better way to design the Loan class.\n\nWhat should the team do?",
     ["Go back and analyze/design again — OOAD is iterative", "Never change the design after coding", "Delete the use cases", "Restart from a brand-new project"],
     "OOAD repeats in cycles (iteration) as improvements are discovered."],
-  ["Situation: The module's \"Simple Factory\" puts a switch inside DrinkFactory.create(). A classmate says this is exactly the Gang of Four's Factory Method.\n\nWhat is the best answer?",
+  ["Situation: The module's beginner \"Simple Factory\" decides which drink to make inside one create() method of DrinkFactory. A classmate says this is exactly the Gang of Four's Factory Method.\n\nWhat is the best answer?",
     ["Not exactly — Factory Method uses the same idea but places the creating method in subclasses", "Yes, they are identical", "No — Factory Method is a Singleton", "No — Factory Method is behavioral"],
     "The teacher note says Factory Method moves the creation method into subclasses."],
-  ["Situation: A multi-threaded server uses a Singleton, and two tasks call getInstance() at the same moment.\n\nWhat does the module's advanced note suggest?",
+  ["Situation: A multi-threaded server uses a Singleton, and two tasks call get_instance() at the same moment.\n\nWhat does the module's advanced note suggest?",
     ["Programs with many threads need extra care with Singleton", "Threads make Singleton impossible to write", "Use Observer instead", "Nothing special is needed"],
     "The module notes that threads need extra care with Singleton."],
   ["Situation: In the noun-and-verb technique, \"fine\" is found as a noun.\n\nWhat does the module say it becomes?",
@@ -363,7 +363,7 @@ p1 = SchoolPrincipal.get_instance()
 p2 = SchoolPrincipal.get_instance()
 print(p1 is p2)`),
     ["`True`", "`False`", "An error (TypeError)", "`None`"],
-    "getInstance creates the object only the first time, so everyone gets the same one."],
+    "get_instance() creates the object only the first time, so everyone gets the same one."],
   [code("Situation: At the milk tea shop app, a customer orders \"hot chocolate\", which the drink factory doesn't know.\n\nWhat is printed?", `class Coffee:
     def serve(self): print("Here is your coffee.")
 class MilkTea:
@@ -379,7 +379,7 @@ class DrinkFactory:
 
 DrinkFactory.create("hot chocolate").serve()`),
     ["`Here is your juice.`", "An error (KeyError)", "`Here is your coffee.`", "Nothing is printed"],
-    "Unknown types fall back to the default, Juice, just like the Java switch's default case."],
+    "Unknown drink types fall back to the default, Juice, so the factory still serves something."],
   [code("Situation: Ana and Ben subscribe to a channel, then Ana unsubscribes before a new video is uploaded.\n\nWhat is printed?", `class Channel:
     def __init__(self):
         self._subscribers = []

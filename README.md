@@ -34,7 +34,7 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 
 The Network Fundamentals banks are drafted from the PBDIT 503 lesson PDFs (C. T. Agos Jr.). The Programming Fundamentals banks are drafted from the PBDIT 501 lessons (PUP Open University System).
 
-Situation questions start with `Situation:` and use a blank line before the actual question; the app shows a SITUATION label and a smaller font for long text. Quiz timers add reading time for long questions (`readingBonus` in `lib/quiz.ts`). Code questions use `code("prompt", \`snippet\`)` and backticks for code-like choices. Every "What is the output?" answer was checked by running the snippet in Python 3.
+Situation questions start with `Situation:` and use a blank line before the actual question; the app shows a SITUATION label and a smaller font for long text. Wordy questions (30+ words including the choices) get a flat 40-second timer (`timeLimitFor` in `lib/quiz.ts`); others use Easy 20 s / Hard 25 s / Tricky 30 s. OOAD questions use Python only (the module's Java code isn't covered). Code questions use `code("prompt", \`snippet\`)` and backticks for code-like choices. Every "What is the output?" answer was checked by running the snippet in Python 3.
 
 To edit or add questions, list the **correct answer first**. Choices are shuffled at runtime. Then run:
 
