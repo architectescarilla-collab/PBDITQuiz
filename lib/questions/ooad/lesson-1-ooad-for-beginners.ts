@@ -1,5 +1,5 @@
 /**
- * Question bank — PBDIT 504 Object-Oriented Analysis and Design,
+ * Question bank — Object-Oriented Analysis and Design,
  * "OOAD for Beginners: Objects, Use Cases, UML Diagrams, and Design Patterns"
  * Source: OOAD Lesson for Beginners – Online Module (J. M. V. Legaspi), pages 1–37 only
  * (the summary, glossary, exercises and references on pages 38–43 are intentionally not used).

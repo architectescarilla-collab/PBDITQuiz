@@ -1,5 +1,5 @@
 /**
- * Key-terms flashcards — PBDIT 504 OOAD, Lesson 1 "OOAD for Beginners".
+ * Key-terms flashcards — OOAD, Lesson 1 "OOAD for Beginners".
  * Source: the module's pages 1–37 only (no Java code; pages 38–43 not used).
  * Front = term, back = plain meaning, detail = everyday example from the module.
  */

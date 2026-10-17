@@ -53,7 +53,7 @@ export const TOPICS: Topic[] = [
   },
   {
     id: "ooad",
-    title: "PBDIT 504 Object-Oriented Analysis and Design",
+    title: "Object-Oriented Analysis and Design",
     description: "Situation-based questions on objects, use cases, UML and design patterns.",
     status: "available",
     lessons: [

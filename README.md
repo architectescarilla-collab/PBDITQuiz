@@ -11,7 +11,7 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
   - Network Fundamentals → Lesson 2: OSI Layers ✅
   - Programming Fundamentals → Lessons 1–2: Introduction to Python ✅
   - Programming Fundamentals → Lessons 2b–3b: Loops, Lists & Tuples, Sets & Dictionaries ✅
-  - PBDIT 504 Object-Oriented Analysis and Design → Lesson 1: OOAD for Beginners ✅ (situation-based questions)
+  - Object-Oriented Analysis and Design → Lesson 1: OOAD for Beginners ✅ (situation-based questions)
   - Information Management — *coming soon*
 - **Difficulties:** Easy (20s), Hard (25s), Tricky (30s), or **Full Challenge** (Easy → Hard → Tricky rounds)
 - **Item count:** 10 / 20 / 30 / 40 / All
@@ -30,8 +30,8 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 | Network Fundamentals · Lesson 2: OSI Layers | `lib/questions/network-fundamentals/lesson-2-osi-layers.ts` | 126 (44 easy · 42 hard · 40 tricky) |
 | Programming Fundamentals · Lessons 1–2: Introduction to Python | `lib/questions/programming-fundamentals/lesson-1-2-intro-to-python.ts` | 106 (40 easy · 34 hard · 32 tricky) |
 | Programming Fundamentals · Lessons 2b–3b: Loops, Lists & Tuples, Sets & Dictionaries | `lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts` | 123 (40 easy · 40 hard · 43 tricky) |
-| PBDIT 504 OOAD · Lesson 1: OOAD for Beginners (module pages 1–37) | `lib/questions/ooad/lesson-1-ooad-for-beginners.ts` | 99 (36 easy · 34 hard · 29 tricky), all "Situation … best answer" |
-| PBDIT 504 OOAD · Lesson 1 key-terms flashcards | `lib/questions/ooad/lesson-1-flashcards.ts` | 61 term cards in 6 groups (Flashcards only) |
+| OOAD · Lesson 1: OOAD for Beginners (module pages 1–37) | `lib/questions/ooad/lesson-1-ooad-for-beginners.ts` | 99 (36 easy · 34 hard · 29 tricky), all "Situation … best answer" |
+| OOAD · Lesson 1 key-terms flashcards | `lib/questions/ooad/lesson-1-flashcards.ts` | 61 term cards in 6 groups (Flashcards only) |
 
 The Network Fundamentals banks are drafted from the PBDIT 503 lesson PDFs (C. T. Agos Jr.). The Programming Fundamentals banks are drafted from the PBDIT 501 lessons (PUP Open University System).
 

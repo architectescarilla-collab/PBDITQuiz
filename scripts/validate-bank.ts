@@ -11,7 +11,7 @@ const banks = {
   "Network Fundamentals / Lesson 2 (OSI)": osiLayersQuestions,
   "Programming Fundamentals / Lessons 1–2 (Intro to Python)": introToPythonQuestions,
   "Programming Fundamentals / Lessons 2b–3b (Loops & Collections)": loopsAndCollectionsQuestions,
-  "PBDIT 504 OOAD / Lesson 1 (OOAD for Beginners)": ooadLesson1Questions,
+  "OOAD / Lesson 1 (OOAD for Beginners)": ooadLesson1Questions,
 };
 let failed = false;
 
@@ -35,7 +35,7 @@ for (const [name, bank] of Object.entries(banks)) {
   console.log(`${name}: ${bank.length} questions`, counts);
 }
 const decks = {
-  "PBDIT 504 OOAD / Lesson 1 key terms": ooadLesson1Flashcards,
+  "OOAD / Lesson 1 key terms": ooadLesson1Flashcards,
 };
 for (const [name, deck] of Object.entries(decks)) {
   const ids = new Set<string>();
