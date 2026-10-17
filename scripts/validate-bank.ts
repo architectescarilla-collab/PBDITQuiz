@@ -2,6 +2,7 @@
 import { introToNetworksQuestions } from "../lib/questions/network-fundamentals/lesson-1-intro-to-networks.ts";
 import { introToPythonQuestions } from "../lib/questions/programming-fundamentals/lesson-1-2-intro-to-python.ts";
 import { loopsAndCollectionsQuestions } from "../lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts";
+import { ooadLesson1Questions } from "../lib/questions/ooad/lesson-1-ooad-for-beginners.ts";
 import { osiLayersQuestions } from "../lib/questions/network-fundamentals/lesson-2-osi-layers.ts";
 
 const banks = {
@@ -9,6 +10,7 @@ const banks = {
   "Network Fundamentals / Lesson 2 (OSI)": osiLayersQuestions,
   "Programming Fundamentals / Lessons 1–2 (Intro to Python)": introToPythonQuestions,
   "Programming Fundamentals / Lessons 2b–3b (Loops & Collections)": loopsAndCollectionsQuestions,
+  "PBDIT 504 OOAD / Lesson 1 (OOAD for Beginners)": ooadLesson1Questions,
 };
 let failed = false;
 

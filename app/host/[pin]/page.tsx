@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { RichText } from "@/components/RichText";
+import { isLong, RichText } from "@/components/RichText";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -61,7 +61,11 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
     setBusy(true);
     setActionError(null);
     try {
-      await postJSON(`/api/games/${pin}/advance`, { phase: state.phase, index: state.index }, { "x-host-key": hostKey });
+      await postJSON(
+        `/api/games/${pin}/advance`,
+        { phase: state.phase, index: state.index },
+        { "x-host-key": hostKey },
+      );
       await refresh();
     } catch (e) {
       setActionError((e as Error).message);
@@ -145,7 +149,12 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
           <p className="text-lg font-bold text-cream/80">
             Question {state.index + 1} of {state.total}
           </p>
-          <RichText text={q.text} className="max-w-4xl text-3xl font-black sm:text-5xl" />
+          <RichText
+            text={q.text}
+            className={
+              isLong(q.text) ? "max-w-4xl text-xl font-bold sm:text-3xl" : "max-w-4xl text-3xl font-black sm:text-5xl"
+            }
+          />
           <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
             {Math.max(1, Math.ceil(msToStart / 1000))}
           </div>
@@ -161,7 +170,10 @@ function HostGame({ pin, hostKey }: { pin: string; hostKey: string }) {
               </span>
               <DifficultyBadge difficulty={q.difficulty} />
             </div>
-            <RichText text={q.text} className="text-2xl font-black sm:text-4xl" />
+            <RichText
+              text={q.text}
+              className={isLong(q.text) ? "text-left text-lg font-bold sm:text-2xl" : "text-2xl font-black sm:text-4xl"}
+            />
           </div>
 
           <div className="flex items-center justify-between">

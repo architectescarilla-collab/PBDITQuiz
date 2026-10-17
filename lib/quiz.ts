@@ -38,6 +38,12 @@ export function countOptions(bank: Question[], mode: DifficultyMode): { value: n
   return opts;
 }
 
+/** Extra seconds for long questions (situations, code), so the timer measures thinking, not reading. */
+export function readingBonus(q: Pick<Question, "question" | "choices">): number {
+  const words = `${q.question} ${q.choices.join(" ")}`.split(/\s+/).filter(Boolean).length;
+  return Math.max(0, Math.min(20, Math.round((words - 20) / 4)));
+}
+
 function prepare(q: Question): PreparedQuestion {
   const order = q.fixedOrder ? q.choices.map((_, i) => i) : shuffle(q.choices.map((_, i) => i));
   return {
@@ -47,7 +53,7 @@ function prepare(q: Question): PreparedQuestion {
     choices: order.map((i) => q.choices[i]),
     answer: order.indexOf(q.answer),
     explanation: q.explanation,
-    timeLimit: TIME_LIMITS[q.difficulty],
+    timeLimit: TIME_LIMITS[q.difficulty] + readingBonus(q),
   };
 }
 
@@ -61,7 +67,10 @@ export function buildQuiz(bank: Question[], mode: DifficultyMode, count: number)
     return shuffle(poolFor(bank, mode)).slice(0, count).map(prepare);
   }
   const pools = ROUND_ORDER.map((d) => shuffle(bank.filter((q) => q.difficulty === d)));
-  const total = Math.min(count, pools.reduce((n, p) => n + p.length, 0));
+  const total = Math.min(
+    count,
+    pools.reduce((n, p) => n + p.length, 0),
+  );
   // Split as evenly as possible; earlier rounds get the remainder.
   const want = ROUND_ORDER.map((_, i) => Math.floor(total / 3) + (i < total % 3 ? 1 : 0));
   // If a round's pool is too small, push the shortfall to the other rounds.

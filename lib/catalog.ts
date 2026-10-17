@@ -3,6 +3,7 @@ import { introToNetworksQuestions } from "./questions/network-fundamentals/lesso
 import { osiLayersQuestions } from "./questions/network-fundamentals/lesson-2-osi-layers";
 import { introToPythonQuestions } from "./questions/programming-fundamentals/lesson-1-2-intro-to-python";
 import { loopsAndCollectionsQuestions } from "./questions/programming-fundamentals/lesson-2b-3b-loops-and-collections";
+import { ooadLesson1Questions } from "./questions/ooad/lesson-1-ooad-for-beginners";
 
 export const TOPICS: Topic[] = [
   {
@@ -46,6 +47,21 @@ export const TOPICS: Topic[] = [
         subtitle: "Loops, Lists & Tuples, Sets & Dictionaries",
         status: "available",
         questions: loopsAndCollectionsQuestions,
+      },
+    ],
+  },
+  {
+    id: "ooad",
+    title: "PBDIT 504 Object-Oriented Analysis and Design",
+    description: "Situation-based questions on objects, use cases, UML and design patterns.",
+    status: "available",
+    lessons: [
+      {
+        id: "lesson-1-ooad-for-beginners",
+        title: "Lesson 1",
+        subtitle: "OOAD for Beginners: Objects, Use Cases, UML Diagrams & Design Patterns",
+        status: "available",
+        questions: ooadLesson1Questions,
       },
     ],
   },

@@ -88,7 +88,7 @@ export function QuizSetup({
   return (
     <div className="space-y-8">
       <Step n={1} title="Choose a topic">
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {TOPICS.map((t) => (
             <Option
               key={t.id}

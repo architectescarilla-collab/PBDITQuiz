@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { RichText } from "@/components/RichText";
+import { isLong, RichText } from "@/components/RichText";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuizSetup, type SetupResult } from "@/components/QuizSetup";
 import { DifficultyBadge, Header, PrimaryButton } from "@/components/ui";
@@ -187,13 +187,13 @@ function Study({ setup }: { setup: SetupResult }) {
             className="block w-full [perspective:1400px]"
           >
             <div
-              className="relative min-h-80 w-full transition-transform duration-500 [transform-style:preserve-3d] sm:min-h-96"
+              className="grid w-full transition-transform duration-500 [transform-style:preserve-3d]"
               style={{ transform: flipped ? "rotateX(180deg)" : "none" }}
             >
-              <div className="absolute inset-0 flex flex-col rounded-2xl bg-paper p-6 text-ink shadow-xl [backface-visibility:hidden] sm:p-10">
+              <div className="col-start-1 row-start-1 flex min-h-80 flex-col rounded-2xl bg-paper p-6 text-ink shadow-xl [backface-visibility:hidden] sm:min-h-96 sm:p-10">
                 {answerFirst ? back : front}
               </div>
-              <div className="absolute inset-0 flex flex-col rounded-2xl bg-paper p-6 text-ink shadow-xl [backface-visibility:hidden] [transform:rotateX(180deg)] sm:p-10">
+              <div className="col-start-1 row-start-1 flex min-h-80 flex-col rounded-2xl bg-paper p-6 text-ink shadow-xl [backface-visibility:hidden] [transform:rotateX(180deg)] sm:min-h-96 sm:p-10">
                 {answerFirst ? front : back}
               </div>
             </div>
@@ -349,7 +349,14 @@ function FaceQuestion({ q, showChoices }: { q: Question; showChoices: boolean })
         <DifficultyBadge difficulty={q.difficulty} />
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-5 py-4 text-center">
-        <RichText text={q.question} className="w-full text-2xl leading-snug font-bold sm:text-3xl" />
+        <RichText
+          text={q.question}
+          className={
+            isLong(q.question)
+              ? "w-full text-lg leading-snug font-bold sm:text-xl"
+              : "w-full text-2xl leading-snug font-bold sm:text-3xl"
+          }
+        />
         {showChoices && (
           <ul className="flex flex-wrap justify-center gap-2">
             {choices.map((c) => (

@@ -1,9 +1,13 @@
 import { Fragment } from "react";
 
+/** True for long questions (e.g. situations), so screens can use a smaller font. */
+export const isLong = (text: string) => text.replace(/```[\s\S]*?```/g, "").length > 140;
+
 /**
  * Renders question-bank text with lightweight code formatting:
  *   ```fenced blocks``` → a monospace code block (indentation kept)
  *   `inline code`       → monospace inline code (newlines kept, for multi-line output)
+ *   blank line          → new paragraph; a leading "Situation:" gets a small label
  * Always renders a <div>, so it can safely hold code blocks.
  */
 export function RichText({ text, className = "" }: { text: string; className?: string }) {
@@ -19,10 +23,38 @@ export function RichText({ text, className = "" }: { text: string; className?: s
             {part}
           </pre>
         ) : (
-          part && <Inline key={i} text={part.trim()} />
+          part.trim() && <Paragraphs key={i} text={part.trim()} />
         ),
       )}
     </div>
+  );
+}
+
+function Paragraphs({ text }: { text: string }) {
+  const paras = text.split(/\n{2,}/);
+  // a single paragraph stays inline so short answers can sit next to a label
+  if (paras.length === 1) return <Paragraph text={text} />;
+  return (
+    <>
+      {paras.map((p, j) => (
+        <span key={j} className={j > 0 ? "mt-3 block" : "block"}>
+          <Paragraph text={p} />
+        </span>
+      ))}
+    </>
+  );
+}
+
+function Paragraph({ text }: { text: string }) {
+  const m = /^Situation:\s*/.exec(text);
+  if (!m) return <Inline text={text} />;
+  return (
+    <>
+      <span className="mr-2 inline-block rounded-full bg-accent/85 px-2 py-0.5 align-middle text-[0.6em] font-extrabold tracking-wider text-ink uppercase">
+        Situation
+      </span>
+      <Inline text={text.slice(m[0].length)} />
+    </>
   );
 }
 

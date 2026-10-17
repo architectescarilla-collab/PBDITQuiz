@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { RichText } from "@/components/RichText";
+import { isLong, RichText } from "@/components/RichText";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChoiceGrid, DifficultyBadge, Header, Leaderboard, Podium, TimerRing, useCountdown } from "@/components/ui";
@@ -37,7 +37,11 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
   const msToStart = useCountdown(q && state?.phase === "countdown" ? toLocal(q.startsAt) : null);
 
   if (!state) {
-    return <main className="flex min-h-[calc(100dvh-45px)] items-center justify-center text-xl font-bold">{error ?? "Connecting…"}</main>;
+    return (
+      <main className="flex min-h-[calc(100dvh-45px)] items-center justify-center text-xl font-bold">
+        {error ?? "Connecting…"}
+      </main>
+    );
   }
 
   if (!state.me) {
@@ -78,13 +82,7 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
 
   return (
     <main className="mx-auto flex min-h-[calc(100dvh-45px)] max-w-3xl flex-col pb-24">
-      <Header
-        right={
-          <span className="rounded-lg bg-cream/15 px-3 py-1 text-sm font-bold">
-            PIN {pin}
-          </span>
-        }
-      />
+      <Header right={<span className="rounded-lg bg-cream/15 px-3 py-1 text-sm font-bold">PIN {pin}</span>} />
       {error && <p className="mx-4 mb-3 rounded-lg bg-bad px-4 py-2 text-center font-bold">{error}</p>}
 
       {state.phase === "lobby" && (
@@ -123,7 +121,10 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
               <div className="mb-1 flex items-center gap-2 text-sm font-bold text-cream/75">
                 {state.index + 1} / {state.total} <DifficultyBadge difficulty={q.difficulty} />
               </div>
-              <RichText text={q.text} className="text-xl font-black sm:text-2xl" />
+              <RichText
+                text={q.text}
+                className={isLong(q.text) ? "text-base font-bold sm:text-lg" : "text-xl font-black sm:text-2xl"}
+              />
             </div>
           </div>
           {myChoice === null ? (
@@ -172,7 +173,8 @@ function PlayerGame({ pin, me }: { pin: string; me: Me }) {
         <section className="flex flex-1 flex-col items-center gap-6 px-4 pt-4">
           <h2 className="text-3xl font-black">🏆 Final ranking</h2>
           <p className="text-xl font-bold">
-            You placed #{my.rank} of {state.playerCount} with {my.score?.toLocaleString()} pts ({my.correct}/{state.total} correct)
+            You placed #{my.rank} of {state.playerCount} with {my.score?.toLocaleString()} pts ({my.correct}/
+            {state.total} correct)
           </p>
           <Podium rows={state.leaderboard} />
           <Leaderboard rows={state.leaderboard} title="Everyone" total={state.total} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { RichText } from "@/components/RichText";
+import { isLong, RichText } from "@/components/RichText";
 import { useCallback, useEffect, useState } from "react";
 import { QuizSetup, type SetupResult } from "@/components/QuizSetup";
 import { ChoiceGrid, DifficultyBadge, Header, PrimaryButton, TimerRing, useCountdown } from "@/components/ui";
@@ -117,7 +117,12 @@ export default function PracticePage() {
             <p className="text-xl font-bold">
               Question {index + 1} of {questions.length}
             </p>
-            <RichText text={q.question} className="max-w-3xl text-3xl font-black" />
+            <RichText
+              text={q.question}
+              className={
+                isLong(q.question) ? "max-w-3xl text-xl font-bold sm:text-2xl" : "max-w-3xl text-3xl font-black"
+              }
+            />
             <div className="animate-pop flex h-24 w-24 items-center justify-center rounded-full bg-paper text-5xl font-black text-clay">
               {Math.max(1, Math.ceil(msToStart / 1000))}
             </div>
@@ -135,14 +140,21 @@ export default function PracticePage() {
                     last?.choice === q.answer ? "bg-good" : "bg-bad"
                   }`}
                 >
-                  {last?.choice === q.answer ? `Correct! +${last.points}` : last?.choice === null ? "Time's up!" : "Incorrect"}
+                  {last?.choice === q.answer
+                    ? `Correct! +${last.points}`
+                    : last?.choice === null
+                      ? "Time's up!"
+                      : "Incorrect"}
                 </div>
               )}
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center gap-2 text-sm font-bold text-cream/75">
                   {index + 1} / {questions.length} <DifficultyBadge difficulty={q.difficulty} />
                 </div>
-                <RichText text={q.question} className="text-xl font-black sm:text-2xl" />
+                <RichText
+                  text={q.question}
+                  className={isLong(q.question) ? "text-base font-bold sm:text-lg" : "text-xl font-black sm:text-2xl"}
+                />
               </div>
             </div>
             <ChoiceGrid
@@ -210,7 +222,11 @@ export default function PracticePage() {
                         <div className="mt-1 space-y-1 text-sm">
                           <div className="text-bad-soft">
                             Your answer:{" "}
-                            {a.choice === null ? "— (no answer)" : <RichText text={a.q.choices[a.choice]} className="inline" />}
+                            {a.choice === null ? (
+                              "— (no answer)"
+                            ) : (
+                              <RichText text={a.q.choices[a.choice]} className="inline" />
+                            )}
                           </div>
                           <div className="text-good-soft">
                             Correct: <RichText text={a.q.choices[a.q.answer]} className="inline" />
