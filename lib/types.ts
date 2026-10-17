@@ -14,6 +14,8 @@ export interface Question {
   explanation: string;
   /** Keep choices in authored order (e.g. True/False). */
   fixedOrder?: boolean;
+  /** If set, wordy questions (30+ words incl. choices) get this many seconds instead of the usual limit. */
+  wordyTime?: number;
 }
 
 export interface Lesson {

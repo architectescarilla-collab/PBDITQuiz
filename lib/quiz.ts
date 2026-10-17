@@ -38,14 +38,15 @@ export function countOptions(bank: Question[], mode: DifficultyMode): { value: n
   return opts;
 }
 
-/** Wordy questions (situations, code) get a flat 40 seconds so the timer measures thinking, not reading. */
+/** Questions this long (question + choices) count as wordy. */
 export const WORDY_WORDS = 30;
-export const WORDY_TIME = 40;
 
-export function timeLimitFor(q: Pick<Question, "question" | "choices" | "difficulty">): number {
-  const words = `${q.question} ${q.choices.join(" ")}`.split(/\s+/).filter(Boolean).length;
+/** Normal limit by difficulty; banks can opt in to a longer limit for wordy questions via `wordyTime`. */
+export function timeLimitFor(q: Pick<Question, "question" | "choices" | "difficulty" | "wordyTime">): number {
   const base = TIME_LIMITS[q.difficulty];
-  return words >= WORDY_WORDS ? Math.max(base, WORDY_TIME) : base;
+  if (!q.wordyTime) return base;
+  const words = `${q.question} ${q.choices.join(" ")}`.split(/\s+/).filter(Boolean).length;
+  return words >= WORDY_WORDS ? Math.max(base, q.wordyTime) : base;
 }
 
 function prepare(q: Question): PreparedQuestion {

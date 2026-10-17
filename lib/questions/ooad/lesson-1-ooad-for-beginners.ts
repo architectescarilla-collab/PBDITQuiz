@@ -403,8 +403,9 @@ channel.upload("OOAD Lesson 1")`),
     "Only current subscribers are notified, and Ana unsubscribed."],
 ];
 
+// Situations take time to read, so wordy OOAD questions get 40 seconds (OOAD only).
 export const ooadLesson1Questions = [
   ...build("ooad1", "easy", easy),
   ...build("ooad1", "hard", hard),
   ...build("ooad1", "tricky", tricky),
-];
+].map((q) => ({ ...q, wordyTime: 40 }));
