@@ -398,14 +398,14 @@ channel = Channel()
 channel.subscribe(ana)
 channel.subscribe(ben)
 channel.unsubscribe(ana)
-channel.upload("OOAD Lesson 1")`),
-    ["`Ben got: OOAD Lesson 1`", "`Ana got: OOAD Lesson 1\nBen got: OOAD Lesson 1`", "`Ana got: OOAD Lesson 1`", "Nothing is printed"],
+channel.upload("OOAD Lesson 4")`),
+    ["`Ben got: OOAD Lesson 4`", "`Ana got: OOAD Lesson 4\nBen got: OOAD Lesson 4`", "`Ana got: OOAD Lesson 4`", "Nothing is printed"],
     "Only current subscribers are notified, and Ana unsubscribed."],
 ];
 
 // Situations take time to read, so wordy OOAD questions get 40 seconds (OOAD only).
-export const ooadLesson1Questions = [
-  ...build("ooad1", "easy", easy),
-  ...build("ooad1", "hard", hard),
-  ...build("ooad1", "tricky", tricky),
+export const ooadLesson4Questions = [
+  ...build("ooad4", "easy", easy),
+  ...build("ooad4", "hard", hard),
+  ...build("ooad4", "tricky", tricky),
 ].map((q) => ({ ...q, wordyTime: 40 }));

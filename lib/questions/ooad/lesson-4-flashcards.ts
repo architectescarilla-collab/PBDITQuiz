@@ -1,5 +1,5 @@
 /**
- * Key-terms flashcards — OOAD, Lesson 1 "OOAD for Beginners".
+ * Key-terms flashcards — OOAD, Lesson 4 "OOAD for Beginners".
  * Source: the module's pages 1–37 only (no Java code; pages 38–43 not used).
  * Front = term, back = plain meaning, detail = everyday example from the module.
  */
@@ -101,9 +101,9 @@ const GROUPS: [group: string, cards: Card[]][] = [
   ],
 ];
 
-export const ooadLesson1Flashcards: Flashcard[] = GROUPS.flatMap(([group, cards], g) =>
+export const ooadLesson4Flashcards: Flashcard[] = GROUPS.flatMap(([group, cards], g) =>
   cards.map(([front, back, detail], i) => ({
-    id: `ooad1-card-${g + 1}-${String(i + 1).padStart(2, "0")}`,
+    id: `ooad4-card-${g + 1}-${String(i + 1).padStart(2, "0")}`,
     group,
     front,
     back,

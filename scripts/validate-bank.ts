@@ -2,8 +2,8 @@
 import { introToNetworksQuestions } from "../lib/questions/network-fundamentals/lesson-1-intro-to-networks.ts";
 import { introToPythonQuestions } from "../lib/questions/programming-fundamentals/lesson-1-2-intro-to-python.ts";
 import { loopsAndCollectionsQuestions } from "../lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts";
-import { ooadLesson1Questions } from "../lib/questions/ooad/lesson-1-ooad-for-beginners.ts";
-import { ooadLesson1Flashcards } from "../lib/questions/ooad/lesson-1-flashcards.ts";
+import { ooadLesson4Questions } from "../lib/questions/ooad/lesson-4-ooad-for-beginners.ts";
+import { ooadLesson4Flashcards } from "../lib/questions/ooad/lesson-4-flashcards.ts";
 import { osiLayersQuestions } from "../lib/questions/network-fundamentals/lesson-2-osi-layers.ts";
 
 const banks = {
@@ -11,7 +11,7 @@ const banks = {
   "Network Fundamentals / Lesson 2 (OSI)": osiLayersQuestions,
   "Programming Fundamentals / Lessons 1–2 (Intro to Python)": introToPythonQuestions,
   "Programming Fundamentals / Lessons 2b–3b (Loops & Collections)": loopsAndCollectionsQuestions,
-  "OOAD / Lesson 1 (OOAD for Beginners)": ooadLesson1Questions,
+  "OOAD / Lesson 4 (OOAD for Beginners)": ooadLesson4Questions,
 };
 let failed = false;
 
@@ -35,7 +35,7 @@ for (const [name, bank] of Object.entries(banks)) {
   console.log(`${name}: ${bank.length} questions`, counts);
 }
 const decks = {
-  "OOAD / Lesson 1 key terms": ooadLesson1Flashcards,
+  "OOAD / Lesson 4 key terms": ooadLesson4Flashcards,
 };
 for (const [name, deck] of Object.entries(decks)) {
   const ids = new Set<string>();
