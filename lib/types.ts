@@ -24,6 +24,19 @@ export interface Lesson {
   subtitle: string;
   status: "available" | "coming-soon";
   questions?: Question[];
+  /** Optional key-terms deck for Flashcards (term → meaning). */
+  flashcards?: Flashcard[];
+}
+
+/** A Quizlet-style term card. */
+export interface Flashcard {
+  id: string;
+  /** Section of the lesson, shown as a tag on the card. */
+  group: string;
+  front: string;
+  back: string;
+  /** Example or extra note shown under the meaning. */
+  detail?: string;
 }
 
 export interface Topic {

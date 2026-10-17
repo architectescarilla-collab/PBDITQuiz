@@ -3,6 +3,7 @@ import { introToNetworksQuestions } from "../lib/questions/network-fundamentals/
 import { introToPythonQuestions } from "../lib/questions/programming-fundamentals/lesson-1-2-intro-to-python.ts";
 import { loopsAndCollectionsQuestions } from "../lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts";
 import { ooadLesson1Questions } from "../lib/questions/ooad/lesson-1-ooad-for-beginners.ts";
+import { ooadLesson1Flashcards } from "../lib/questions/ooad/lesson-1-flashcards.ts";
 import { osiLayersQuestions } from "../lib/questions/network-fundamentals/lesson-2-osi-layers.ts";
 
 const banks = {
@@ -33,5 +34,22 @@ for (const [name, bank] of Object.entries(banks)) {
   }
   console.log(`${name}: ${bank.length} questions`, counts);
 }
+const decks = {
+  "PBDIT 504 OOAD / Lesson 1 key terms": ooadLesson1Flashcards,
+};
+for (const [name, deck] of Object.entries(decks)) {
+  const ids = new Set<string>();
+  const fronts = new Set<string>();
+  for (const c of deck) {
+    const err = (m: string) => { failed = true; console.error(`✗ ${c.id}: ${m}`); };
+    if (ids.has(c.id)) err("duplicate id");
+    ids.add(c.id);
+    const f = c.front.trim().toLowerCase();
+    if (fronts.has(f)) err("duplicate term");
+    fronts.add(f);
+    if (!c.front.trim() || !c.back.trim() || !c.group.trim()) err("empty field");
+  }
+  console.log(`${name}: ${deck.length} cards`);
+}
 if (failed) process.exit(1);
-console.log("✓ all banks valid");
+console.log("✓ all banks and decks valid");

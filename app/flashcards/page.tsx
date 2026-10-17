@@ -7,7 +7,31 @@ import { QuizSetup, type SetupResult } from "@/components/QuizSetup";
 import { DifficultyBadge, Header, PrimaryButton } from "@/components/ui";
 import { readLocal, writeLocal } from "@/components/useGame";
 import { DIFFICULTY_INFO, poolFor, shuffle } from "@/lib/quiz";
-import type { Question } from "@/lib/types";
+import type { Difficulty, Flashcard, Question } from "@/lib/types";
+
+/** One card in a study deck, from either a quiz question or a key-terms card. */
+interface StudyCard {
+  id: string;
+  front: string;
+  back: string;
+  detail?: string;
+  difficulty?: Difficulty;
+  group?: string;
+  choices?: string[];
+  fixedOrder?: boolean;
+}
+
+const fromQuestion = (q: Question): StudyCard => ({
+  id: q.id,
+  front: q.question,
+  back: q.choices[q.answer],
+  detail: q.explanation,
+  difficulty: q.difficulty,
+  choices: q.choices,
+  fixedOrder: q.fixedOrder,
+});
+
+const fromTerm = (c: Flashcard): StudyCard => ({ ...c });
 
 const progressKey = (s: SetupResult) => `cards:${s.topic.id}:${s.lesson.id}`;
 
@@ -59,7 +83,7 @@ export default function FlashcardsPage() {
             />
           </>
         ) : (
-          <Study key={`${setup.lesson.id}:${setup.mode}`} setup={setup} />
+          <Study key={`${setup.lesson.id}:${setup.terms ? "terms" : setup.mode}`} setup={setup} />
         )}
       </div>
     </main>
@@ -67,14 +91,21 @@ export default function FlashcardsPage() {
 }
 
 function Study({ setup }: { setup: SetupResult }) {
-  const all = useMemo(() => poolFor(setup.lesson.questions ?? [], setup.mode), [setup]);
+  const all = useMemo(
+    () =>
+      setup.terms
+        ? (setup.lesson.flashcards ?? []).map(fromTerm)
+        : poolFor(setup.lesson.questions ?? [], setup.mode).map(fromQuestion),
+    [setup],
+  );
+  const terms = !!setup.terms;
 
   const [shuffled, setShuffled] = useState(false);
   const [answerFirst, setAnswerFirst] = useState(false);
   const [showChoices, setShowChoices] = useState(true);
   const [tracking, setTracking] = useState(true);
 
-  const [deck, setDeck] = useState<Question[]>(all);
+  const [deck, setDeck] = useState<StudyCard[]>(all);
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [learning, setLearning] = useState<string[]>([]); // "still learning" this round
@@ -91,7 +122,7 @@ function Study({ setup }: { setup: SetupResult }) {
   };
 
   const restart = useCallback(
-    (cards: Question[], doShuffle = shuffled) => {
+    (cards: StudyCard[], doShuffle = shuffled) => {
       setDeck(doShuffle ? shuffle(cards) : cards);
       setI(0);
       setFlipped(false);
@@ -144,17 +175,16 @@ function Study({ setup }: { setup: SetupResult }) {
   }, [done, tracking, mark, go]);
 
   const learningCards = all.filter((q) => learning.includes(q.id));
-  const answerText = (q: Question) => q.choices[q.answer];
-
-  const front = card && <FaceQuestion q={card} showChoices={showChoices} />;
-  const back = card && <FaceAnswer q={card} answer={answerText(card)} />;
+  const front = card && <FaceFront c={card} showChoices={showChoices} label={terms ? "Term" : "Question"} />;
+  const back = card && <FaceBack c={card} label={terms ? "Meaning" : "Answer"} />;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-bold uppercase tracking-wider text-accent">
-            {setup.lesson.title} · {setup.mode === "full" ? "All cards" : DIFFICULTY_INFO[setup.mode].label}
+            {setup.lesson.title} ·{" "}
+            {terms ? "Key terms" : setup.mode === "full" ? "All cards" : DIFFICULTY_INFO[setup.mode].label}
           </p>
           <h1 className="text-2xl font-black">{setup.lesson.subtitle}</h1>
         </div>
@@ -183,7 +213,7 @@ function Study({ setup }: { setup: SetupResult }) {
           <button
             type="button"
             onClick={() => setFlipped((f) => !f)}
-            aria-label={flipped ? "Show question" : "Show answer"}
+            aria-label={flipped ? (terms ? "Show term" : "Show question") : terms ? "Show meaning" : "Show answer"}
             className="block w-full [perspective:1400px]"
           >
             <div
@@ -257,14 +287,14 @@ function Study({ setup }: { setup: SetupResult }) {
               }}
               label="Shuffle"
             />
-            <Toggle on={showChoices} onChange={setShowChoices} label="Show choices" />
+            {!terms && <Toggle on={showChoices} onChange={setShowChoices} label="Show choices" />}
             <Toggle
               on={answerFirst}
               onChange={(v) => {
                 setAnswerFirst(v);
                 setFlipped(false);
               }}
-              label="Answer first"
+              label={terms ? "Meaning first" : "Answer first"}
             />
           </div>
         </>
@@ -321,15 +351,21 @@ function Study({ setup }: { setup: SetupResult }) {
         </div>
         <ul className="space-y-2">
           {all.map((q) => (
-            <li key={q.id} className="grid gap-2 rounded-xl bg-paper p-4 text-ink sm:grid-cols-[3fr_2fr] sm:gap-6">
-              <RichText text={q.question} className="font-semibold" />
+            <li
+              key={q.id}
+              className={`grid gap-2 rounded-xl bg-paper p-4 text-ink sm:gap-6 ${terms ? "sm:grid-cols-[2fr_3fr]" : "sm:grid-cols-[3fr_2fr]"}`}
+            >
+              <div className="min-w-0">
+                {terms && q.group && <GroupTag group={q.group} />}
+                <RichText text={q.front} className={terms ? "font-extrabold" : "font-semibold"} />
+              </div>
               <p className="flex items-start gap-2 font-bold text-clay sm:border-l sm:border-sand sm:pl-6">
                 {known.has(q.id) && (
                   <span title="You know this" className="text-good">
                     ✓
                   </span>
                 )}
-                <RichText text={answerText(q)} />
+                <RichText text={q.back} className={terms ? "font-semibold text-ink" : undefined} />
               </p>
             </li>
           ))}
@@ -339,32 +375,40 @@ function Study({ setup }: { setup: SetupResult }) {
   );
 }
 
-function FaceQuestion({ q, showChoices }: { q: Question; showChoices: boolean }) {
+function GroupTag({ group }: { group: string }) {
+  return (
+    <span className="mb-1 inline-block rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-ink/70">
+      {group}
+    </span>
+  );
+}
+
+function FaceFront({ c, showChoices, label }: { c: StudyCard; showChoices: boolean; label: string }) {
   // The bank lists the correct answer first, so shuffle the hints (keep True/False in order).
-  const choices = useMemo(() => (q.fixedOrder ? q.choices : shuffle(q.choices)), [q]);
+  const choices = useMemo(() => (c.choices && !c.fixedOrder ? shuffle(c.choices) : c.choices), [c]);
   return (
     <>
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-extrabold uppercase tracking-wider text-ink/50">Question</span>
-        <DifficultyBadge difficulty={q.difficulty} />
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs font-extrabold uppercase tracking-wider text-ink/50">{label}</span>
+        {c.difficulty ? <DifficultyBadge difficulty={c.difficulty} /> : c.group && <GroupTag group={c.group} />}
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-5 py-4 text-center">
         <RichText
-          text={q.question}
+          text={c.front}
           className={
-            isLong(q.question)
+            isLong(c.front)
               ? "w-full text-lg leading-snug font-bold sm:text-xl"
               : "w-full text-2xl leading-snug font-bold sm:text-3xl"
           }
         />
-        {showChoices && (
+        {showChoices && choices && (
           <ul className="flex flex-wrap justify-center gap-2">
-            {choices.map((c) => (
+            {choices.map((ch) => (
               <li
-                key={c}
+                key={ch}
                 className="rounded-full border border-sand bg-sand/30 px-3 py-1 text-sm font-semibold text-ink/80"
               >
-                <RichText text={c} />
+                <RichText text={ch} />
               </li>
             ))}
           </ul>
@@ -374,13 +418,23 @@ function FaceQuestion({ q, showChoices }: { q: Question; showChoices: boolean })
   );
 }
 
-function FaceAnswer({ q, answer }: { q: Question; answer: string }) {
+function FaceBack({ c, label }: { c: StudyCard; label: string }) {
+  const term = !c.difficulty;
   return (
     <>
-      <span className="text-xs font-extrabold uppercase tracking-wider text-ink/50">Answer</span>
+      <span className="text-xs font-extrabold uppercase tracking-wider text-ink/50">{label}</span>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 text-center">
-        <RichText text={answer} className="text-3xl font-black text-clay sm:text-4xl" />
-        <RichText text={q.explanation} className="max-w-xl text-base text-ink/75 sm:text-lg" />
+        <RichText
+          text={c.back}
+          className={
+            term || isLong(c.back)
+              ? "max-w-2xl text-xl leading-snug font-extrabold text-clay sm:text-2xl"
+              : "text-3xl font-black text-clay sm:text-4xl"
+          }
+        />
+        {c.detail && (
+          <RichText text={c.detail} className={`max-w-xl text-base text-ink/75 sm:text-lg ${term ? "italic" : ""}`} />
+        )}
       </div>
     </>
   );

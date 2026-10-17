@@ -11,6 +11,8 @@ export interface SetupResult {
   lesson: Lesson;
   mode: DifficultyMode;
   count: number;
+  /** Flashcards only: study the lesson's key-terms deck instead of the question bank. */
+  terms?: boolean;
 }
 
 const MODES: DifficultyMode[] = ["easy", "hard", "tricky", "full"];
@@ -82,6 +84,7 @@ export function QuizSetup({
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [mode, setMode] = useState<DifficultyMode | null>(null);
   const [count, setCount] = useState<number | null>(null);
+  const [terms, setTerms] = useState(false);
 
   const bank = lesson?.questions ?? [];
 
@@ -99,6 +102,7 @@ export function QuizSetup({
                 setLesson(null);
                 setMode(null);
                 setCount(null);
+                setTerms(false);
               }}
             >
               <div className="flex flex-wrap items-center gap-2">
@@ -123,6 +127,7 @@ export function QuizSetup({
                   setLesson(l);
                   setMode(null);
                   setCount(null);
+                  setTerms(false);
                 }}
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -130,7 +135,12 @@ export function QuizSetup({
                   {l.status !== "available" && <SoonBadge />}
                 </div>
                 <div className="mt-1 text-lg font-bold">{l.subtitle}</div>
-                {l.questions && <p className="mt-1 text-sm text-cream/70">{l.questions.length} questions in the bank</p>}
+                {l.questions && (
+                  <p className="mt-1 text-sm text-cream/70">
+                    {l.questions.length} questions in the bank
+                    {cards && l.flashcards ? ` · ${l.flashcards.length} key terms` : ""}
+                  </p>
+                )}
               </Option>
             ))}
           </div>
@@ -139,12 +149,27 @@ export function QuizSetup({
 
       {lesson && (
         <Step n={3} title={cards ? "Which cards?" : "Choose difficulty"}>
-          <div className="grid gap-3 sm:grid-cols-4">
+          <div className={`grid gap-3 ${cards && lesson.flashcards ? "sm:grid-cols-2 lg:grid-cols-5" : "sm:grid-cols-4"}`}>
+            {cards && lesson.flashcards && (
+              <Option
+                selected={terms}
+                onClick={() => {
+                  setTerms(true);
+                  setMode("full");
+                  setCount(lesson.flashcards?.length ?? 0);
+                }}
+              >
+                <div className="text-lg font-extrabold">📇 Key terms</div>
+                <p className="mt-1 text-sm text-cream/75">Term → meaning, with an example</p>
+                <p className="mt-1 text-xs text-cream/60">{lesson.flashcards.length} cards</p>
+              </Option>
+            )}
             {MODES.map((m) => (
               <Option
                 key={m}
-                selected={mode === m}
+                selected={!terms && mode === m}
                 onClick={() => {
+                  setTerms(false);
                   setMode(m);
                   setCount(cards ? poolFor(bank, m).length : null);
                 }}
@@ -153,7 +178,11 @@ export function QuizSetup({
                   {DIFFICULTY_INFO[m].emoji} {cards && m === "full" ? "All cards" : DIFFICULTY_INFO[m].label}
                 </div>
                 <p className="mt-1 text-sm text-cream/75">
-                  {cards && m === "full" ? "Every card in the lesson" : DIFFICULTY_INFO[m].blurb}
+                  {cards && m === "full"
+                    ? lesson.flashcards
+                      ? "Every question card in the lesson"
+                      : "Every card in the lesson"
+                    : DIFFICULTY_INFO[m].blurb}
                 </p>
                 <p className="mt-1 text-xs text-cream/60">
                   {poolFor(bank, m).length} {cards ? "cards" : "available"}
@@ -187,7 +216,7 @@ export function QuizSetup({
       <div className="pt-2">
         <PrimaryButton
           disabled={!topic || !lesson || !mode || !count || busy}
-          onClick={() => topic && lesson && mode && count && onSubmit({ topic, lesson, mode, count })}
+          onClick={() => topic && lesson && mode && count && onSubmit({ topic, lesson, mode, count, terms })}
           className="w-full sm:w-auto"
         >
           {busy ? "Please wait…" : submitLabel}

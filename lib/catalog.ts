@@ -4,6 +4,7 @@ import { osiLayersQuestions } from "./questions/network-fundamentals/lesson-2-os
 import { introToPythonQuestions } from "./questions/programming-fundamentals/lesson-1-2-intro-to-python";
 import { loopsAndCollectionsQuestions } from "./questions/programming-fundamentals/lesson-2b-3b-loops-and-collections";
 import { ooadLesson1Questions } from "./questions/ooad/lesson-1-ooad-for-beginners";
+import { ooadLesson1Flashcards } from "./questions/ooad/lesson-1-flashcards";
 
 export const TOPICS: Topic[] = [
   {
@@ -62,6 +63,7 @@ export const TOPICS: Topic[] = [
         subtitle: "OOAD for Beginners: Objects, Use Cases, UML Diagrams & Design Patterns",
         status: "available",
         questions: ooadLesson1Questions,
+        flashcards: ooadLesson1Flashcards,
       },
     ],
   },
