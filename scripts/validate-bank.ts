@@ -4,6 +4,8 @@ import { introToPythonQuestions } from "../lib/questions/programming-fundamental
 import { loopsAndCollectionsQuestions } from "../lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts";
 import { ooadLesson4Questions } from "../lib/questions/ooad/lesson-4-ooad-for-beginners.ts";
 import { ooadLesson4Flashcards } from "../lib/questions/ooad/lesson-4-flashcards.ts";
+import { networkDesignQuestions } from "../lib/questions/network-administration/lesson-3-network-design.ts";
+import { networkDesignFlashcards } from "../lib/questions/network-administration/lesson-3-flashcards.ts";
 import { osiLayersQuestions } from "../lib/questions/network-fundamentals/lesson-2-osi-layers.ts";
 
 const banks = {
@@ -12,6 +14,7 @@ const banks = {
   "Programming Fundamentals / Lessons 1–2 (Intro to Python)": introToPythonQuestions,
   "Programming Fundamentals / Lessons 2b–3b (Loops & Collections)": loopsAndCollectionsQuestions,
   "OOAD / Lesson 4 (OOAD for Beginners)": ooadLesson4Questions,
+  "Network Administration / Lesson 3 (Network Design)": networkDesignQuestions,
 };
 let failed = false;
 
@@ -36,6 +39,7 @@ for (const [name, bank] of Object.entries(banks)) {
 }
 const decks = {
   "OOAD / Lesson 4 key terms": ooadLesson4Flashcards,
+  "Network Administration / Lesson 3 key terms": networkDesignFlashcards,
 };
 for (const [name, deck] of Object.entries(decks)) {
   const ids = new Set<string>();

@@ -5,6 +5,8 @@ import { introToPythonQuestions } from "./questions/programming-fundamentals/les
 import { loopsAndCollectionsQuestions } from "./questions/programming-fundamentals/lesson-2b-3b-loops-and-collections";
 import { ooadLesson4Questions } from "./questions/ooad/lesson-4-ooad-for-beginners";
 import { ooadLesson4Flashcards } from "./questions/ooad/lesson-4-flashcards";
+import { networkDesignQuestions } from "./questions/network-administration/lesson-3-network-design";
+import { networkDesignFlashcards } from "./questions/network-administration/lesson-3-flashcards";
 
 export const TOPICS: Topic[] = [
   {
@@ -67,6 +69,24 @@ export const TOPICS: Topic[] = [
         status: "available",
         questions: ooadLesson4Questions,
         flashcards: ooadLesson4Flashcards,
+      },
+    ],
+  },
+  {
+    id: "network-administration",
+    title: "Network Administration",
+    description: "Planning, designing and documenting networks.",
+    status: "available",
+    lessons: [
+      { id: "lesson-1", title: "Lesson 1", subtitle: "Topic to be announced", status: "coming-soon" },
+      { id: "lesson-2", title: "Lesson 2", subtitle: "Topic to be announced", status: "coming-soon" },
+      {
+        id: "lesson-3-network-design",
+        title: "Lesson 3",
+        subtitle: "Introduction to Network Design",
+        status: "available",
+        questions: networkDesignQuestions,
+        flashcards: networkDesignFlashcards,
       },
     ],
   },

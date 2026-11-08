@@ -12,6 +12,7 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
   - Programming Fundamentals → Lessons 1–2: Introduction to Python ✅
   - Programming Fundamentals → Lessons 2b–3b: Loops, Lists & Tuples, Sets & Dictionaries ✅
   - Object-Oriented Analysis and Design → Lessons 1–3 (coming soon), Lesson 4: OOAD for Beginners ✅ (situation-based questions)
+  - Network Administration → Lessons 1–2 (coming soon), Lesson 3: Introduction to Network Design ✅ (+ key-terms flashcards)
   - Information Management — *coming soon*
 - **Difficulties:** Easy (20s), Hard (25s), Tricky (30s), or **Full Challenge** (Easy → Hard → Tricky rounds)
 - **Item count:** 10 / 20 / 30 / 40 / All
@@ -32,6 +33,8 @@ A Kahoot-style quiz app for PBDIT lessons. You can host a live game with a PIN a
 | Programming Fundamentals · Lessons 2b–3b: Loops, Lists & Tuples, Sets & Dictionaries | `lib/questions/programming-fundamentals/lesson-2b-3b-loops-and-collections.ts` | 123 (40 easy · 40 hard · 43 tricky) |
 | OOAD · Lesson 4: OOAD for Beginners (module pages 1–37) | `lib/questions/ooad/lesson-4-ooad-for-beginners.ts` | 99 (36 easy · 34 hard · 29 tricky), all "Situation … best answer" |
 | OOAD · Lesson 4 key-terms flashcards | `lib/questions/ooad/lesson-4-flashcards.ts` | 61 term cards in 6 groups (Flashcards only) |
+| Network Administration · Lesson 3: Introduction to Network Design (Lecture 3) | `lib/questions/network-administration/lesson-3-network-design.ts` | 90 (30 easy · 30 hard · 30 tricky) |
+| Network Administration · Lesson 3 key-terms flashcards | `lib/questions/network-administration/lesson-3-flashcards.ts` | 37 term cards in 6 groups (Flashcards only) |
 
 The Network Fundamentals banks are drafted from the PBDIT 503 lesson PDFs (C. T. Agos Jr.). The Programming Fundamentals banks are drafted from the PBDIT 501 lessons (PUP Open University System).
 
