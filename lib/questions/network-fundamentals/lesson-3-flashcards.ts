@@ -1,5 +1,5 @@
 /**
- * Key-terms flashcards — Network Administration, Lecture 3 "Introduction to Network Design".
+ * Key-terms flashcards — Network Fundamentals, Lesson 3 "Introduction to Network Design".
  * Front = term, back = meaning, detail = example or note from the lecture.
  */
 import type { Flashcard } from "../../types";
@@ -78,7 +78,7 @@ const GROUPS: [group: string, cards: Card[]][] = [
 
 export const networkDesignFlashcards: Flashcard[] = GROUPS.flatMap(([group, cards], g) =>
   cards.map(([front, back, detail], i) => ({
-    id: `netadm3-card-${g + 1}-${String(i + 1).padStart(2, "0")}`,
+    id: `net3-card-${g + 1}-${String(i + 1).padStart(2, "0")}`,
     group,
     front,
     back,

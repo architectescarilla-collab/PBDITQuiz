@@ -1,5 +1,5 @@
 /**
- * Question bank — Network Administration, Lecture 3: "Introduction to Network Design"
+ * Question bank — Network Fundamentals, Lesson 3: "Introduction to Network Design"
  * Source: PBDIT_Network_Design_Lecture-3 (Celso T. Agos Jr., PBDIT Open University).
  */
 import { build, type Entry } from "../build.ts";
@@ -293,7 +293,7 @@ const tricky: Entry[] = [
 ];
 
 export const networkDesignQuestions = [
-  ...build("netadm3", "easy", easy),
-  ...build("netadm3", "hard", hard),
-  ...build("netadm3", "tricky", tricky),
+  ...build("net3", "easy", easy),
+  ...build("net3", "hard", hard),
+  ...build("net3", "tricky", tricky),
 ];
